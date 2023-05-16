@@ -14,16 +14,13 @@ import java.util.HashSet;
 public class GamePanel extends JPanel implements Runnable {
 
     public final int MAX_SCREEN_COL = 20;
-    public final int MAX_SCREE_ROW = 20;                        // ces valeurs donnent une résolution 4:3
+    public final int MAX_SCREEN_ROW = 20;                        // ces valeurs donnent une résolution 4:3
     //Paramètres de l'écran
     final int ORIGINAL_TILE_SIZE =20;                            // une tuile de taille 16x16
-    final int SCALE = 2;                                        // échelle utilisée pour agrandir l'affichage
+    public final int SCALE = 2;                                        // échelle utilisée pour agrandir l'affichage
     public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;    // 48x48
     public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 768 pixels
-    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;    // 576 pixels
-
-    public final int GRAVITY = 7;
-    public final int TERMINAL_VELOCITY = 300;
+    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW;    // 576 pixels
 
     // FPS : taux de rafraichissement
     int m_FPS;
@@ -34,7 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
     Player m_player;
     TileManager m_tileM;
 
-    HashSet<UnlivingEntity> unlivingEntities;
+    public HashSet<UnlivingEntity> unlivingEntities;
 
     /**
      * Constructeur
@@ -64,7 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void run() {
 
-        double drawInterval = 1000000000 / m_FPS; // rafraichissement chaque 0.0166666 secondes
+        double drawInterval = 1_000_000_000.0 / m_FPS; // rafraichissement chaque 0.0166666 secondes
         double nextDrawTime = System.nanoTime() + drawInterval;
 
         while (m_gameThread != null) { //Tant que le thread du jeu est actif
@@ -99,25 +96,11 @@ public class GamePanel extends JPanel implements Runnable {
      * Mise à jour des données des entités
      */
     public void update() {
-        boolean collision = false;
-        boolean pickable = false;
-//        System.out.println("unlivingEntities = " + unlivingEntities);
-        for (UnlivingEntity unlivingEntity :
-                unlivingEntities) {
-            if (unlivingEntity.position.getX() < m_player.futurePosition().getX() + m_player.width &&
-                    unlivingEntity.position.getX() + unlivingEntity.width > m_player.futurePosition().getX() &&
-                    unlivingEntity.position.getY() < m_player.futurePosition().getY() + m_player.height &&
-                    unlivingEntity.height + unlivingEntity.position.getY() > m_player.futurePosition().getY()) {
-
-//                System.out.println(m_player.futurePosition());
-//                System.out.println(unlivingEntity.position);
-//                System.out.println("----");
-                collision = true;
-                if(unlivingEntity.pickable) pickable=true;
-            }
-        }
-        m_player.update(collision, pickable);
+        m_player.update();
+        //handleEntityCollisions();
     }
+
+
 
     /**
      * Affichage des éléments

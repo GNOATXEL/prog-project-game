@@ -17,8 +17,12 @@ public class Player extends Entity {
 
     GamePanel m_gp;
     KeyHandler m_keyH;
-    int vertical_speed;
     int compteurSaut;
+
+    private static final float JUMP_FORCE = -10.0f; // Force du saut
+    private static final float GRAVITY = 0.5f; // Force de gravité
+
+    private final Vector2 velocity;
 
     /**
      * Constructeur de Player
@@ -34,6 +38,8 @@ public class Player extends Entity {
 
         width = larg;
         height = haut;
+
+        velocity = new Vector2(0, 0);
     }
 
     /**
@@ -41,8 +47,7 @@ public class Player extends Entity {
      */
     protected void setDefaultValues() {
         // TODO: à modifier sûrement
-        position = new Vector2(250, 100);
-        m_speed = 4;
+        position = new Vector2(50, 500);
         compteurSaut = 0;
     }
 
@@ -61,36 +66,112 @@ public class Player extends Entity {
     /**
      * Mise à jour des données du joueur
      */
-    public void update(boolean collision, boolean pickable) {
-        if (!collision) {
-            if (m_keyH.is_jumping && compteurSaut < 20) {
-                position = futurePosition();
-                compteurSaut++;
+    public void update() {
+        // Gestion de la gravité
+        applyGravity();
 
-            } else {
-                position = fall();
+        // Gestion des mouvements horizontaux
+        handleHorizontalMovement();
+
+        // Gestion des collisions
+        handleCollisions();
+
+        if (m_keyH.isJumpPressed()) {
+            // Perform jump action
+            System.out.println("jump");
+            if (isOnGround()) {
+                System.out.println("osol");
+                jump();
             }
-        } else if (collision && pickable) {
-            position = futurePosition();
-            vertical_speed = 0;
-            if(!m_keyH.is_jumping) compteurSaut = 0;
-        } else {
-            position = futurePosition();
-            vertical_speed = 0;
-            if(!m_keyH.is_jumping) compteurSaut = 0;
         }
 
-        System.out.println(futurePosition());
+        position.addX(velocity.getX());
+        position.addY(velocity.getY());
+
+        // Other player update logic...
     }
 
-    public Vector2 fall() {
-        Vector2 chute = new Vector2(0, m_gp.GRAVITY);
-        return position.addVector(chute);
+    private boolean isOnGround() {
+        // Vérifier la collision avec les plateformes ou le sol
+        for (Entity entity : m_gp.unlivingEntities) {
+            if (entity instanceof Brick) {
+                if (collidesWith(entity) && position.getY() >= entity.position.getY() + entity.height) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public Vector2 futurePosition() {
-        return position.addVector(m_keyH.directions.scalarMultiplication(m_speed));
+    private void jump() {
+        velocity.setY(-JUMP_FORCE); // Appliquer une force vers le haut pour le saut
     }
+
+    private void applyGravity() {
+        // Appliquer une force de gravité à la position du joueur
+        velocity.addY(GRAVITY * m_gp.SCALE);
+    }
+
+    private void handleHorizontalMovement() {
+        int moveSpeed = m_gp.SCALE; // Vitesse de déplacement horizontale
+
+        if (m_keyH.isLeftPressed()) {
+            velocity.setX(-moveSpeed); // Déplacer vers la gauche avec une vitesse négative
+        } else if (m_keyH.isRightPressed()) {
+            velocity.setX(moveSpeed); // Déplacer vers la droite avec une vitesse positive
+        } else {
+            velocity.setX(0); // Aucune touche de déplacement horizontale pressée, arrêter le mouvement horizontal
+        }
+    }
+
+    private void handleCollisions() {
+        for (Entity entity : m_gp.unlivingEntities) {
+            if (entity != this && this.collidesWith(entity)) {
+                if (entity instanceof Brick) {
+                    handleBlockCollision((Brick) entity);
+                } /*else if (entity instanceof Enemy) {
+                    handleEnemyCollision((Enemy) entity);
+                }*/
+                // Ajoutez des conditions supplémentaires pour d'autres types d'entités, le cas échéant
+            }
+        }
+    }
+
+    private void handleBlockCollision(Brick block) {
+        // Logique de gestion de collision avec un bloc
+        // Par exemple, arrêter le mouvement horizontal ou vertical, rebondir, etc.
+
+        // Déterminer la direction de la collision (gauche, droite, haut, bas)
+        double dx = position.getX() - block.position.getX();
+        double dy = position.getY() - block.position.getY();
+
+        float intersectionX = (float) (Math.abs(dx) - (float) (width + block.width) / 2);
+        float intersectionY = (float) (Math.abs(dy) - (float) (height + block.height) / 2);
+
+        // Réajuster la position du joueur
+        if (intersectionX > intersectionY) {
+            if (dx > 0) {
+                System.out.println("a");
+                position.setX(block.position.getX() + (double) block.width / 2 + (double) width / 2);
+            } else {
+                System.out.println("b");
+                position.setX(block.position.getX() - (double) block.width / 2 - (double) width / 2);
+            }
+        } else {
+            if (dy > 0) {
+                System.out.println("c");
+                position.setY(block.position.getY() + (double) block.height / 2 + (double) height / 2);
+            } else {
+                System.out.println("d");
+                position.setY(block.position.getY() - (double) block.height / 2 - (double) height / 2);
+            }
+        }
+    }
+
+    /*private void handleEnemyCollision(Enemy enemy) {
+        // Logique de gestion de collision avec un ennemi
+        // Par exemple, réduire les points de vie, déclencher une animation de mort, etc.
+    }*/
 
     /**
      * Affichage de l'image du joueur dans la fenêtre du jeu
@@ -101,7 +182,7 @@ public class Player extends Entity {
         // récupère l'image du joueur
         BufferedImage l_image = m_idleImage;
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
-        a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+        a_g2.drawImage(l_image, (int) position.getX(), (int) position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
     }
 
 

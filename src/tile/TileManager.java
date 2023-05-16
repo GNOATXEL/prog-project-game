@@ -30,7 +30,7 @@ public class TileManager {
     public TileManager(GamePanel gp) {
         this.m_gp = gp;
         m_tile = new Tile[m_maxTiles];
-        m_mapTileNum = new int[gp.MAX_SCREEN_COL][gp.MAX_SCREE_ROW];
+        m_mapTileNum = new int[gp.MAX_SCREEN_COL][gp.MAX_SCREEN_ROW];
         unlivingEntities = new HashSet<>();
 
         this.getTileImage();
@@ -138,20 +138,18 @@ public class TileManager {
             int row = 0;
 
             // Parcourir le fichier txt pour récupérer les valeurs
-            while (col < m_gp.MAX_SCREEN_COL && row < m_gp.MAX_SCREE_ROW) {
+            while (col < m_gp.MAX_SCREEN_COL && row < m_gp.MAX_SCREEN_ROW) {
                 String line = br.readLine();
                 while (col < m_gp.MAX_SCREEN_COL) {
                     String numbers[] = line.split("\t");
                     int num = Integer.parseInt(numbers[col]);
                     m_mapTileNum[col][row] = num;
 
-                    UnlivingEntity entity = new UnlivingEntity(0, 0, 0, 0, false);
-
-                    if (num >= 1 && num <= 9 || num == 12) { //TODO : mettre le sol lol bref
-                        entity = new Brick(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                    // Créer l'entité correspondante en fonction du numéro
+                    if ((num != 0 && num != 13 && num != 18 && num != 19) ) {
+                        UnlivingEntity entity = new Brick(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                        unlivingEntities.add(entity);
                     }
-
-                    unlivingEntities.add(entity);
 
                     col++;
                 }
@@ -178,7 +176,7 @@ public class TileManager {
         int x = 0;
         int y = 0;
 
-        while (col < m_gp.MAX_SCREEN_COL && row < m_gp.MAX_SCREE_ROW) {
+        while (col < m_gp.MAX_SCREEN_COL && row < m_gp.MAX_SCREEN_ROW) {
             int tileNum = m_mapTileNum[col][row];
 
             g2.drawImage(m_tile[tileNum].m_image, x, y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
