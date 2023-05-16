@@ -92,7 +92,7 @@ public class TileManager {
 
                     UnlivingEntity entity = new UnlivingEntity(0, 0, 0, 0, false);
 
-                    if (num >= 1 && num <= 9 || num == 12) {
+                    if (num >= 1 && num <= 9 || num == 12) { //TODO : mettre le sol lol bref
                         entity = new Brick(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
 

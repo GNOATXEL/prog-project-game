@@ -43,7 +43,7 @@ public class Player extends Entity {
         // TODO: à modifier sûrement
         position = new Vector2(250, 100);
         m_speed = 4;
-        compteurSaut=0;
+        compteurSaut = 0;
     }
 
     /**
@@ -63,29 +63,27 @@ public class Player extends Entity {
      */
     public void update(boolean collision, boolean pickable) {
         if (!collision) {
-            if(m_keyH.is_jumping && compteurSaut<10) {
+            if (m_keyH.is_jumping && compteurSaut < 20) {
                 position = futurePosition();
                 compteurSaut++;
 
             } else {
                 position = fall();
             }
-        }
-        else if (collision && pickable) {
+        } else if (collision && pickable) {
             position = futurePosition();
-            vertical_speed=0;
-            compteurSaut=0;
-        }
-        else {
-            position = futurePosition() ;
-            vertical_speed=0;
-            compteurSaut=0;
+            vertical_speed = 0;
+            if(!m_keyH.is_jumping) compteurSaut = 0;
+        } else {
+            position = futurePosition();
+            vertical_speed = 0;
+            if(!m_keyH.is_jumping) compteurSaut = 0;
         }
 
         System.out.println(futurePosition());
     }
 
-    public Vector2 fall(){
+    public Vector2 fall() {
         Vector2 chute = new Vector2(0, m_gp.GRAVITY);
         return position.addVector(chute);
     }
