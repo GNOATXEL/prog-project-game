@@ -7,7 +7,6 @@ import tile.TileManager;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
-import entity.Cleent;
 
 /**
  * Panel principal du jeu contenant la map principale

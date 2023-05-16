@@ -159,7 +159,7 @@ public class TileManager {
                     m_mapTileNum[col][row] = num;
 
                     UnlivingEntity entity = new UnlivingEntity(0, 0, 0, 0);
-                    ;
+
 
                     if (num >= 1 && num <= 9) {
                         entity = new Brick(col, row, 16, 16);
