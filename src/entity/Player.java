@@ -17,6 +17,8 @@ public class Player extends Entity {
 
     GamePanel m_gp;
     KeyHandler m_keyH;
+    int vertical_speed;
+    int compteurSaut;
 
     /**
      * Constructeur de Player
@@ -41,6 +43,7 @@ public class Player extends Entity {
         // TODO: à modifier sûrement
         position = new Vector2(250, 100);
         m_speed = 4;
+        compteurSaut=0;
     }
 
     /**
@@ -59,14 +62,36 @@ public class Player extends Entity {
      * Mise à jour des données du joueur
      */
     public void update(boolean collision, boolean pickable) {
-        if (!collision) position = futurePosition();
-        else if (collision && pickable) position = futurePosition();
+        if (!collision) {
+            if(m_keyH.is_jumping && compteurSaut<10) {
+                position = futurePosition();
+                compteurSaut++;
+
+            } else {
+                position = fall();
+            }
+        }
+        else if (collision && pickable) {
+            position = futurePosition();
+            vertical_speed=0;
+            compteurSaut=0;
+        }
+        else {
+            position = futurePosition() ;
+            vertical_speed=0;
+            compteurSaut=0;
+        }
 
         System.out.println(futurePosition());
     }
 
+    public Vector2 fall(){
+        Vector2 chute = new Vector2(0, m_gp.GRAVITY);
+        return position.addVector(chute);
+    }
+
     public Vector2 futurePosition() {
-        return position.addVector(m_keyH.directions);
+        return position.addVector(m_keyH.directions.scalarMultiplication(m_speed));
     }
 
     /**

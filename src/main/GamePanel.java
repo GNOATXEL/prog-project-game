@@ -22,6 +22,9 @@ public class GamePanel extends JPanel implements Runnable {
     public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 768 pixels
     public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;    // 576 pixels
 
+    public final int GRAVITY = 7;
+    public final int TERMINAL_VELOCITY = 300;
+
     // FPS : taux de rafraichissement
     int m_FPS;
 
