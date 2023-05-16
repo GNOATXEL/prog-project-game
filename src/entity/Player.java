@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import lib.Vector2;
 import main.GamePanel;
 import main.KeyHandler;
 
@@ -18,6 +20,7 @@ public class Player extends Entity{
 
 	GamePanel m_gp;
 	KeyHandler m_keyH;
+	Vector2 position;
 	
 	/**
 	 * Constructeur de Player
@@ -35,8 +38,8 @@ public class Player extends Entity{
 	 * Initialisation des données membres avec des valeurs par défaut
 	 */
 	protected void setDefaultValues() {
-		m_x = 100;
-		m_y = 100;
+		// TODO: à modifier sûrement
+		position = new Vector2(100, 100);
 		m_speed = 4;
 	}
 	
@@ -44,9 +47,9 @@ public class Player extends Entity{
 	 * Récupération de l'image du personnage
 	 */
 	public void getPlayerImage() {
-		//gestion des expections 
+		//gestion des exceptions
 		try {
-			m_idleImage = ImageIO.read(getClass().getResource("/player/superhero.png"));
+			m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/superhero.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -56,9 +59,9 @@ public class Player extends Entity{
 	 * Mise à jour des données du joueur
 	 */
 	public void update() {
-		
-		
-		
+		position = position.addVector(m_keyH.directions);
+		/*System.out.println("m_keyH.directions = " + m_keyH.directions);
+		System.out.println("position = " + position);*/
 	}
 	
 	/**
@@ -69,7 +72,7 @@ public class Player extends Entity{
 		// récupère l'image du joueur
 		BufferedImage l_image = m_idleImage;
 		// affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
-		a_g2.drawImage(l_image, m_x, m_y, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+		a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 	}
 	
 	

@@ -1,5 +1,7 @@
 package main;
 
+import lib.Vector2;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -8,6 +10,7 @@ import java.awt.event.KeyListener;
  *
  */
 public class KeyHandler implements KeyListener{
+	public Vector2 directions = new Vector2(0, 0);
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -18,12 +21,32 @@ public class KeyHandler implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		// récupère le code du bouton appuyé
 		int code = e.getKeyCode();
-		System.out.println(code);
+//		System.out.println(code);
+
+		switch (code) {
+			// Q
+			case 81 -> directions.setX(-1);
+			// D
+			case 68 -> directions.setX(1);
+			// espace
+			case 32 -> directions.setY(-1);
+		}
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+		// récupère le code du bouton appuyé
+		int code = e.getKeyCode();
+
+		switch (code) {
+			// Q
+			case 81: directions.setX(0);
+				// D
+			case 68: directions.setX(0);
+				// espace
+			case 32: directions.setY(0);
+		}
 	}
 
 }
