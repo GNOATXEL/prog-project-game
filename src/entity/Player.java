@@ -19,6 +19,9 @@ public class Player extends Entity {
     KeyHandler m_keyH;
     int vertical_speed;
     int compteurSaut;
+    int acc;
+    int y;
+    boolean isFalling;
 
     /**
      * Constructeur de Player
@@ -34,6 +37,7 @@ public class Player extends Entity {
 
         width = larg;
         height = haut;
+        isFalling=false;
     }
 
     /**
@@ -41,9 +45,11 @@ public class Player extends Entity {
      */
     protected void setDefaultValues() {
         // TODO: à modifier sûrement
-        position = new Vector2(250, 100);
+        position = new Vector2(50, 525);
         m_speed = 4;
         compteurSaut = 0;
+        acc = m_gp.GRAVITY;
+        y=0;
     }
 
     /**
@@ -61,35 +67,50 @@ public class Player extends Entity {
     /**
      * Mise à jour des données du joueur
      */
-    public void update(boolean collision, boolean pickable) {
-        if (!collision) {
+    public void update(boolean pickable) {
+        if (!m_gp.collide()) {
             if (m_keyH.is_jumping && compteurSaut < 20) {
+                isFalling=false;
                 position = futurePosition();
                 compteurSaut++;
-
+                acc=0;
+                vertical_speed=0;
             } else {
-                position = fall();
+                isFalling=true;
+                position=futurePosition();
+                fall();
             }
-        } else if (collision && pickable) {
-            position = futurePosition();
-            vertical_speed = 0;
-            if(!m_keyH.is_jumping) compteurSaut = 0;
-        } else {
-            position = futurePosition();
-            vertical_speed = 0;
-            if(!m_keyH.is_jumping) compteurSaut = 0;
+        }else {
+            isFalling=false;
+            if (pickable) {
+                position = futurePosition();
+                vertical_speed = 0;
+                acc = 0;
+            }
+            if (!m_keyH.is_jumping) {
+                compteurSaut = 0;
+                vertical_speed = 0;
+                acc = 0;
+            }
         }
 
         System.out.println(futurePosition());
     }
 
-    public Vector2 fall() {
-        Vector2 chute = new Vector2(0, m_gp.GRAVITY);
-        return position.addVector(chute);
+    public void fall() {
+        for(int i = 0 ; i<m_gp.GRAVITY;i++){
+            if(!m_gp.collide()) {
+                position.addY(1);
+            } else {
+                return;
+            }
+        }
     }
 
     public Vector2 futurePosition() {
-        return position.addVector(m_keyH.directions.scalarMultiplication(m_speed));
+        Vector2 res=new Vector2(m_keyH.directions.scalarMultiplication(m_speed));
+        if(isFalling) res.addY(1);
+        return position.addVector(res);
     }
 
     /**

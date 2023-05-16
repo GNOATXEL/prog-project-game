@@ -2,6 +2,7 @@ package main;
 
 import entity.Player;
 import entity.UnlivingEntity;
+import lib.Vector2;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -42,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     public GamePanel() {
         m_FPS = 60;
         m_keyH = new KeyHandler();
-        m_player = new Player(this, m_keyH, 16*SCALE, 16*SCALE);
+        m_player = new Player(this, m_keyH, TILE_SIZE, TILE_SIZE);
         m_tileM = new TileManager(this);
 
         unlivingEntities = m_tileM.getUnlivingEntities();
@@ -100,23 +101,27 @@ public class GamePanel extends JPanel implements Runnable {
      */
     public void update() {
         boolean collision = false;
-        boolean pickable = false;
+        boolean pickable = false; //TODO : mettre les pickables
 //        System.out.println("unlivingEntities = " + unlivingEntities);
+        m_player.update( pickable);
+    }
+
+    public boolean collide() {
         for (UnlivingEntity unlivingEntity :
                 unlivingEntities) {
-            if (unlivingEntity.position.getX() < m_player.futurePosition().getX() + m_player.width &&
-                    unlivingEntity.position.getX() + unlivingEntity.width > m_player.futurePosition().getX() &&
-                    unlivingEntity.position.getY() < m_player.futurePosition().getY() + m_player.height &&
-                    unlivingEntity.height + unlivingEntity.position.getY() > m_player.futurePosition().getY()) {
+            Vector2 pos=m_player.futurePosition();
+            if (pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + m_player.width > unlivingEntity.position.getX() &&
+                    pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
+                    m_player.height + pos.getY()  > unlivingEntity.position.getY()) {
 
 //                System.out.println(m_player.futurePosition());
 //                System.out.println(unlivingEntity.position);
 //                System.out.println("----");
-                collision = true;
-                if(unlivingEntity.pickable) pickable=true;
+                return true;
             }
         }
-        m_player.update(collision, pickable);
+        return false;
     }
 
     /**
