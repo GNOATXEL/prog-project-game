@@ -30,6 +30,9 @@ public class KeyHandler implements KeyListener{
 			case 68 -> directions.setX(1);
 			// espace
 			case 32 -> directions.setY(-1);
+			//bas
+			case 83 -> directions.setY(1);
+
 		}
 
 	}
@@ -41,11 +44,13 @@ public class KeyHandler implements KeyListener{
 
 		switch (code) {
 			// Q
-			case 81: directions.setX(0);
+			case 81-> directions.setX(0);
 				// D
-			case 68: directions.setX(0);
+			case 68-> directions.setX(0);
 				// espace
-			case 32: directions.setY(0);
+			case 32-> directions.setY(0);
+			//bas
+			case 83-> directions.setY(0);
 		}
 	}
 

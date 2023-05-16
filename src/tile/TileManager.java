@@ -91,10 +91,9 @@ public class TileManager {
                     m_mapTileNum[col][row] = num;
 
                     UnlivingEntity entity = new UnlivingEntity(0, 0, 0, 0, false);
-                    ;
 
-                    if (num >= 1 && num <= 9) {
-                        entity = new Brick(col, row, 16, 16);
+                    if (num >= 1 && num <= 9 || num == 12) {
+                        entity = new Brick(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
 
                     unlivingEntities.add(entity);

@@ -39,7 +39,7 @@ public class Player extends Entity {
      */
     protected void setDefaultValues() {
         // TODO: à modifier sûrement
-        position = new Vector2(100, 100);
+        position = new Vector2(250, 100);
         m_speed = 4;
     }
 
@@ -61,6 +61,8 @@ public class Player extends Entity {
     public void update(boolean collision, boolean pickable) {
         if (!collision) position = futurePosition();
         else if (collision && pickable) position = futurePosition();
+
+        System.out.println(futurePosition());
     }
 
     public Vector2 futurePosition() {
