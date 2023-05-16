@@ -62,6 +62,7 @@ public class Player extends Entity {
      * Mise à jour des données du joueur
      */
     public void update(boolean collision, boolean pickable) {
+        System.out.println(collision);
         if (!collision) {
             if (m_keyH.is_jumping && compteurSaut < 20) {
                 position = futurePosition();

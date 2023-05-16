@@ -101,19 +101,18 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         boolean collision = false;
         boolean pickable = false;
+        boolean colDroite=false;
+        boolean colGauche=false;
 //        System.out.println("unlivingEntities = " + unlivingEntities);
         for (UnlivingEntity unlivingEntity :
                 unlivingEntities) {
-            if (unlivingEntity.position.getX() <= m_player.futurePosition().getX() + m_player.width &&
-                    unlivingEntity.position.getX() + unlivingEntity.width >= m_player.futurePosition().getX() &&
-                    unlivingEntity.position.getY() <= m_player.futurePosition().getY() + m_player.height &&
-                    unlivingEntity.height + unlivingEntity.position.getY() >= m_player.futurePosition().getY()) {
+            if (unlivingEntity.position.getX() < m_player.futurePosition().getX() + m_player.width &&//j droite
+                    unlivingEntity.position.getX() + unlivingEntity.width > m_player.futurePosition().getX() &&//j gauche
+                    unlivingEntity.height + unlivingEntity.position.getY() > m_player.futurePosition().getY()//j dessus
+                    && unlivingEntity.position.getY() < m_player.futurePosition().getY() + m_player.height){//j dessous
 
-//                System.out.println(m_player.futurePosition());
-//                System.out.println(unlivingEntity.position);
-//                System.out.println("----");
                 collision = true;
-                if(unlivingEntity.pickable) pickable=true;
+                if (unlivingEntity.pickable) pickable = true;
             }
         }
         m_player.update(collision, pickable);

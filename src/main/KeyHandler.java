@@ -12,7 +12,6 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener{
 	public Vector2 directions = new Vector2(0, 0);
 	public boolean is_jumping = false;
-
 	@Override
 	public void keyTyped(KeyEvent e) {
 		
