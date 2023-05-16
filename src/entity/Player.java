@@ -41,7 +41,7 @@ public class Player extends Entity {
      */
     protected void setDefaultValues() {
         // TODO: à modifier sûrement
-        position = new Vector2(250, 100);
+        position = new Vector2(50, 530);
         m_speed = 4;
         compteurSaut = 0;
     }
@@ -85,7 +85,7 @@ public class Player extends Entity {
 
     public Vector2 fall() {
         Vector2 chute = new Vector2(0, m_gp.GRAVITY);
-        return position.addVector(chute);
+        return position.addVector(chute).addVector(m_keyH.directions.scalarMultiplication(m_speed));
     }
 
     public Vector2 futurePosition() {

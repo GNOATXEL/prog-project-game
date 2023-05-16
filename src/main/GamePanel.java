@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
     public GamePanel() {
         m_FPS = 60;
         m_keyH = new KeyHandler();
-        m_player = new Player(this, m_keyH, 16*SCALE, 16*SCALE);
+        m_player = new Player(this, m_keyH, TILE_SIZE, TILE_SIZE);
         m_tileM = new TileManager(this);
 
         unlivingEntities = m_tileM.getUnlivingEntities();
@@ -104,10 +104,10 @@ public class GamePanel extends JPanel implements Runnable {
 //        System.out.println("unlivingEntities = " + unlivingEntities);
         for (UnlivingEntity unlivingEntity :
                 unlivingEntities) {
-            if (unlivingEntity.position.getX() < m_player.futurePosition().getX() + m_player.width &&
-                    unlivingEntity.position.getX() + unlivingEntity.width > m_player.futurePosition().getX() &&
-                    unlivingEntity.position.getY() < m_player.futurePosition().getY() + m_player.height &&
-                    unlivingEntity.height + unlivingEntity.position.getY() > m_player.futurePosition().getY()) {
+            if (unlivingEntity.position.getX() <= m_player.futurePosition().getX() + m_player.width &&
+                    unlivingEntity.position.getX() + unlivingEntity.width >= m_player.futurePosition().getX() &&
+                    unlivingEntity.position.getY() <= m_player.futurePosition().getY() + m_player.height &&
+                    unlivingEntity.height + unlivingEntity.position.getY() >= m_player.futurePosition().getY()) {
 
 //                System.out.println(m_player.futurePosition());
 //                System.out.println(unlivingEntity.position);

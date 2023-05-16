@@ -34,8 +34,6 @@ public class KeyHandler implements KeyListener{
 				is_jumping=true;
 				directions.setY(-1);
 			}
-			//bas
-			case 83 -> directions.setY(1);
 
 		}
 
