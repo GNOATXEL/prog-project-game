@@ -22,6 +22,9 @@ public class GamePanel extends JPanel implements Runnable {
     public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 800
     public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;    // 800
 
+    public final int GRAVITY = 7;
+    public final int TERMINAL_VELOCITY = 300;
+
     // FPS : taux de rafraichissement
     int m_FPS;
 
@@ -40,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     public GamePanel() {
         m_FPS = 60;
         m_keyH = new KeyHandler();
-        m_player = new Player(this, m_keyH, 16, 32);
+        m_player = new Player(this, m_keyH, 16*SCALE, 16*SCALE);
         m_tileM = new TileManager(this);
 
         unlivingEntities = m_tileM.getUnlivingEntities();
@@ -98,16 +101,23 @@ public class GamePanel extends JPanel implements Runnable {
      */
     public void update() {
         boolean collision = false;
+        boolean pickable = false;
+//        System.out.println("unlivingEntities = " + unlivingEntities);
         for (UnlivingEntity unlivingEntity :
                 unlivingEntities) {
             if (unlivingEntity.position.getX() < m_player.futurePosition().getX() + m_player.width &&
                     unlivingEntity.position.getX() + unlivingEntity.width > m_player.futurePosition().getX() &&
                     unlivingEntity.position.getY() < m_player.futurePosition().getY() + m_player.height &&
                     unlivingEntity.height + unlivingEntity.position.getY() > m_player.futurePosition().getY()) {
+
+//                System.out.println(m_player.futurePosition());
+//                System.out.println(unlivingEntity.position);
+//                System.out.println("----");
                 collision = true;
+                if(unlivingEntity.pickable) pickable=true;
             }
         }
-        m_player.update(collision);
+        m_player.update(collision, pickable);
     }
 
     /**
