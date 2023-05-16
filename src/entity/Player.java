@@ -10,15 +10,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-/**
- * Défintition du comportement d'un joueur
- */
-public class Player extends Entity {
-
-    GamePanel m_gp;
+public class Player extends LivingEntity {
     KeyHandler m_keyH;
     int vertical_speed;
     int compteurSaut;
+
+    int m_vie;
 
     /**
      * Constructeur de Player
@@ -27,13 +24,14 @@ public class Player extends Entity {
      * @param a_keyH KeyHandler, gestionnaire des touches
      */
     public Player(GamePanel a_gp, KeyHandler a_keyH, int larg, int haut) {
-        this.m_gp = a_gp;
+        super(a_gp, larg, haut);
+        this.getImage();
         this.m_keyH = a_keyH;
         this.setDefaultValues();
-        this.getPlayerImage();
 
         width = larg;
         height = haut;
+        m_vie=3;
     }
 
     /**
@@ -41,7 +39,7 @@ public class Player extends Entity {
      */
     protected void setDefaultValues() {
         // TODO: à modifier sûrement
-        position = new Vector2(250, 100);
+        position = new Vector2(50, 520);
         m_speed = 4;
         compteurSaut = 0;
     }
@@ -49,7 +47,7 @@ public class Player extends Entity {
     /**
      * Récupération de l'image du personnage
      */
-    public void getPlayerImage() {
+    public void getImage() {
         //gestion des exceptions
         try {
             m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/superhero.png")));
@@ -89,7 +87,7 @@ public class Player extends Entity {
     }
 
     public Vector2 futurePosition() {
-        return position.addVector(m_keyH.directions.scalarMultiplication(m_speed));
+        return position.addVector(m_keyH.directions);
     }
 
     /**
@@ -103,6 +101,4 @@ public class Player extends Entity {
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
         a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
     }
-
-
 }
