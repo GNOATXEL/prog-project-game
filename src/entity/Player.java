@@ -19,8 +19,8 @@ public class Player extends Entity {
     KeyHandler m_keyH;
     int compteurSaut;
 
-    private static final float JUMP_FORCE = -10.0f; // Force du saut
-    private static final float GRAVITY = 0.5f; // Force de gravité
+    private static final double JUMP_FORCE = 10.0; // Force du saut
+    private static final double GRAVITY = 0.5; // Force de gravité
 
     private final Vector2 velocity;
 
@@ -46,8 +46,7 @@ public class Player extends Entity {
      * Initialisation des données membres avec des valeurs par défaut
      */
     protected void setDefaultValues() {
-        // TODO: à modifier sûrement
-        position = new Vector2(50, 500);
+        position = new Vector2(50, 520);
         compteurSaut = 0;
     }
 
@@ -88,14 +87,18 @@ public class Player extends Entity {
         position.addX(velocity.getX());
         position.addY(velocity.getY());
 
-        // Other player update logic...
+        /*if(position.getX() > m_gp.SCREEN_WIDTH || position.getX() < 0 || position.getY() < 0 || position.getY() > m_gp.SCREEN_HEIGHT) {
+            position.setX(50);
+            position.setY(520);
+        }*/
     }
 
     private boolean isOnGround() {
         // Vérifier la collision avec les plateformes ou le sol
-        for (Entity entity : m_gp.unlivingEntities) {
+        for (UnlivingEntity entity : m_gp.unlivingEntities) {
             if (entity instanceof Brick) {
-                if (collidesWith(entity) && position.getY() >= entity.position.getY() + entity.height) {
+                //if (collidesWith(entity) && position.getY() >= entity.position.getY() + entity.height) {
+                if (collidesWith(entity) && position.getY() + height >= entity.position.getY()) {
                     return true;
                 }
             }
@@ -109,11 +112,11 @@ public class Player extends Entity {
 
     private void applyGravity() {
         // Appliquer une force de gravité à la position du joueur
-        velocity.addY(GRAVITY * m_gp.SCALE);
+        velocity.addY(GRAVITY);
     }
 
     private void handleHorizontalMovement() {
-        int moveSpeed = m_gp.SCALE; // Vitesse de déplacement horizontale
+        int moveSpeed = 1; // Vitesse de déplacement horizontale
 
         if (m_keyH.isLeftPressed()) {
             velocity.setX(-moveSpeed); // Déplacer vers la gauche avec une vitesse négative
@@ -138,35 +141,40 @@ public class Player extends Entity {
     }
 
     private void handleBlockCollision(Brick block) {
-        // Logique de gestion de collision avec un bloc
-        // Par exemple, arrêter le mouvement horizontal ou vertical, rebondir, etc.
-
         // Déterminer la direction de la collision (gauche, droite, haut, bas)
         double dx = position.getX() - block.position.getX();
         double dy = position.getY() - block.position.getY();
 
+        // Calculer l'intersection entre les rectangles du joueur et du bloc
         float intersectionX = (float) (Math.abs(dx) - (float) (width + block.width) / 2);
         float intersectionY = (float) (Math.abs(dy) - (float) (height + block.height) / 2);
 
-        // Réajuster la position du joueur
+        // Réajuster la position du joueur en fonction de la direction de la collision
         if (intersectionX > intersectionY) {
             if (dx > 0) {
-                System.out.println("a");
-                position.setX(block.position.getX() + (double) block.width / 2 + (double) width / 2);
+                // Collision sur le côté droit du bloc
+                System.out.println("côté droit du bloc");
+                position.setX(block.position.getX() + (double) (block.width * m_gp.SCALE) / 2 + (double) (width * m_gp.SCALE) / 2);
             } else {
-                System.out.println("b");
-                position.setX(block.position.getX() - (double) block.width / 2 - (double) width / 2);
+                // Collision sur le côté gauche du bloc
+                System.out.println("côté gauche du bloc");
+                position.setX(block.position.getX() - (double) (block.width) / 2 - (double) (width) / 2);
             }
         } else {
             if (dy > 0) {
-                System.out.println("c");
-                position.setY(block.position.getY() + (double) block.height / 2 + (double) height / 2);
+                // Collision en bas du bloc (le joueur est au-dessus du bloc)
+                System.out.println("bas du bloc");
+                position.setY(block.position.getY() + (double) (block.height * m_gp.SCALE) / 2 + (double) (height * m_gp.SCALE) / 2);
+                velocity.setY(0);
             } else {
-                System.out.println("d");
-                position.setY(block.position.getY() - (double) block.height / 2 - (double) height / 2);
+                // Collision en haut du bloc (le joueur est en dessous du bloc)
+                System.out.println("haut du bloc");
+                position.setY(block.position.getY() - (double) (block.height) / 2 - (double) (height) / 2);
+                velocity.setY(0);
             }
         }
     }
+
 
     /*private void handleEnemyCollision(Enemy enemy) {
         // Logique de gestion de collision avec un ennemi
