@@ -7,6 +7,7 @@ import tile.TileManager;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
+import entity.Cleent;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -16,11 +17,11 @@ public class GamePanel extends JPanel implements Runnable {
     public final int MAX_SCREEN_COL = 20;
     public final int MAX_SCREE_ROW = 20;                        // ces valeurs donnent une résolution 4:3
     //Paramètres de l'écran
-    final int ORIGINAL_TILE_SIZE =20;                            // une tuile de taille 16x16
+    final int ORIGINAL_TILE_SIZE = 20;                            // une tuile de taille 16x16
     final int SCALE = 2;                                        // échelle utilisée pour agrandir l'affichage
-    public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;    // 48x48
-    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 768 pixels
-    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;    // 576 pixels
+    public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;    // 40*40
+    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 800
+    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;    // 800
 
     // FPS : taux de rafraichissement
     int m_FPS;
@@ -29,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler m_keyH;
     Thread m_gameThread;
     Player m_player;
+
     TileManager m_tileM;
 
     HashSet<UnlivingEntity> unlivingEntities;

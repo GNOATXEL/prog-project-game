@@ -18,7 +18,7 @@ import java.util.HashSet;
 public class TileManager {
     GamePanel m_gp;            //panel du jeu principal
     Tile[] m_tile;            //tableau de toutes les tiles possibles dans le jeu
-    int m_maxTiles = 25;    //nombre maximum de tiles chargeable dans le jeu
+    int m_maxTiles = 30;    //nombre maximum de tiles chargeable dans le jeu
     int m_mapTileNum[][];    //répartition des tiles dans la carte du jeu
     HashSet<UnlivingEntity> unlivingEntities;
 
@@ -34,7 +34,7 @@ public class TileManager {
         unlivingEntities = new HashSet<>();
 
         this.getTileImage();
-        this.loadMap("/maps/map1_part1.txt");
+        this.loadMap("/maps/map1_part6.txt");
     }
 
     public HashSet<UnlivingEntity> getUnlivingEntities() {
@@ -117,6 +117,19 @@ public class TileManager {
 
             m_tile[16] = new Tile();
             m_tile[16].m_image = ImageIO.read(getClass().getResource("/tiles/PLATEFORMERIGHT.png"));
+
+
+            m_tile[24] = new Tile();
+            m_tile[24].m_image = ImageIO.read(getClass().getResource("/tiles/COINTTR.png"));
+
+            m_tile[25] = new Tile();
+            m_tile[25].m_image = ImageIO.read(getClass().getResource("/tiles/COINTTL.png"));
+
+            m_tile[26] = new Tile();
+            m_tile[26].m_image = ImageIO.read(getClass().getResource("/tiles/COINTBR.png"));
+
+            m_tile[27] = new Tile();
+            m_tile[27].m_image = ImageIO.read(getClass().getResource("/tiles/COINTBL.png"));
 
 
         } catch (IOException e) {
