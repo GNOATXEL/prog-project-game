@@ -17,8 +17,8 @@ public class Player extends Entity {
 
     GamePanel m_gp;
     KeyHandler m_keyH;
-    int vertical_speed;
     int compteurSaut;
+    private double acc_y;
 
     /**
      * Constructeur de Player
@@ -41,7 +41,7 @@ public class Player extends Entity {
      */
     protected void setDefaultValues() {
         // TODO: à modifier sûrement
-        position = new Vector2(250, 100);
+        position = new Vector2(50, 550);
         m_speed = 4;
         compteurSaut = 0;
     }
@@ -58,38 +58,43 @@ public class Player extends Entity {
         }
     }
 
+    public void pre_update() {
+        acc_y = m_gp.GRAVITY;
+
+        if (m_keyH.directions.getY() == 0 && m_keyH.is_jumping) {
+            acc_y = -m_gp.ACCELERATION;
+        }
+
+        m_keyH.directions.addY(m_speed * acc_y);
+        //position.addY(m_keyH.directions.getY());
+    }
+
+    public void touches_ground() {
+        System.out.println("sol touché");
+        if (acc_y != m_gp.GRAVITY)
+            position.addY(-1 * m_speed);
+
+        m_keyH.directions.setY(0);
+        acc_y = 0;
+    }
+
     /**
      * Mise à jour des données du joueur
      */
     public void update(boolean collision, boolean pickable) {
-        if (!collision) {
-            if (m_keyH.is_jumping && compteurSaut < 20) {
-                position = futurePosition();
-                compteurSaut++;
 
-            } else {
-                position = fall();
-            }
-        } else if (collision && pickable) {
+
+        if (!collision) {
+            System.out.println("jpp");
             position = futurePosition();
-            vertical_speed = 0;
-            if(!m_keyH.is_jumping) compteurSaut = 0;
-        } else {
-            position = futurePosition();
-            vertical_speed = 0;
-            if(!m_keyH.is_jumping) compteurSaut = 0;
         }
 
-        System.out.println(futurePosition());
-    }
 
-    public Vector2 fall() {
-        Vector2 chute = new Vector2(0, m_gp.GRAVITY);
-        return position.addVector(chute);
+        //System.out.println(futurePosition());
     }
 
     public Vector2 futurePosition() {
-        return position.addVector(m_keyH.directions.scalarMultiplication(m_speed));
+        return position.addVector(m_keyH.directions);
     }
 
     /**
@@ -101,8 +106,6 @@ public class Player extends Entity {
         // récupère l'image du joueur
         BufferedImage l_image = m_idleImage;
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
-        a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+        a_g2.drawImage(l_image, (int) position.getX(), (int) position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
     }
-
-
 }

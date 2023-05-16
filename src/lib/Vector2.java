@@ -8,8 +8,8 @@ import java.lang.Math;
  */
 public class Vector2
 {
-	private int positionX;
-	private int positionY;
+	private double positionX;
+	private double positionY;
 
 	public Vector2()
 	{
@@ -17,7 +17,7 @@ public class Vector2
 		this.positionY = 0;
 	}
 
-	public Vector2(int x, int y)
+	public Vector2(double x, double y)
 	{
 		positionX = x;
 		positionY = y;
@@ -29,12 +29,12 @@ public class Vector2
 		positionY = v.getY();
 	}
 
-	public int getX()
+	public double getX()
 	{
 		return positionX;
 	}
 
-	public int getY()
+	public double getY()
 	{
 		return positionY;
 	}
@@ -44,22 +44,22 @@ public class Vector2
 		return (this.positionX == p.positionX && this.positionY == p.positionY);
 	}
 
-	public void setX(int x)
+	public void setX(double x)
 	{
 		this.positionX = x;
 	}
 
-	public void setY(int y)
+	public void setY(double y)
 	{
 		this.positionY = y;
 	}
 
-	public void addX(int x)
+	public void addX(double x)
 	{
 		this.positionX += x;
 	}
 
-	public void addY(int y)
+	public void addY(double y)
 	{
 		this.positionY += y;
 	}

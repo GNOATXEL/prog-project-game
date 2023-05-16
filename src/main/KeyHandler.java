@@ -32,7 +32,7 @@ public class KeyHandler implements KeyListener{
 			// espace
 			case 32 -> {
 				is_jumping=true;
-				directions.setY(-1);
+				//directions.setY(-1);
 			}
 			//bas
 			case 83 -> directions.setY(1);
@@ -53,7 +53,7 @@ public class KeyHandler implements KeyListener{
 			case 68-> directions.setX(0);
 				// espace
 			case 32-> {
-				directions.setY(0);
+				//directions.setY(0);
 				is_jumping = false;
 			}
 			//bas

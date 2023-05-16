@@ -14,15 +14,16 @@ import java.util.HashSet;
 public class GamePanel extends JPanel implements Runnable {
 
     public final int MAX_SCREEN_COL = 20;
-    public final int MAX_SCREE_ROW = 20;                        // ces valeurs donnent une résolution 4:3
+    public final int MAX_SCREEN_ROW = 20;                        // ces valeurs donnent une résolution 4:3
     //Paramètres de l'écran
-    final int ORIGINAL_TILE_SIZE =20;                            // une tuile de taille 16x16
+    final int ORIGINAL_TILE_SIZE = 20;                          // une tuile de taille 16x16
     final int SCALE = 2;                                        // échelle utilisée pour agrandir l'affichage
-    public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;    // 48x48
-    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 768 pixels
-    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;    // 576 pixels
+    public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;    // 40x40
+    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 800 pixels
+    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW; // 800 pixels
 
-    public final int GRAVITY = 7;
+    public final double GRAVITY = 0.5;
+    public final double ACCELERATION = 3;
     public final int TERMINAL_VELOCITY = 300;
 
     // FPS : taux de rafraichissement
@@ -42,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     public GamePanel() {
         m_FPS = 60;
         m_keyH = new KeyHandler();
-        m_player = new Player(this, m_keyH, 16*SCALE, 16*SCALE);
+        m_player = new Player(this, m_keyH, TILE_SIZE, TILE_SIZE);
         m_tileM = new TileManager(this);
 
         unlivingEntities = m_tileM.getUnlivingEntities();
@@ -64,7 +65,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void run() {
 
-        double drawInterval = 1000000000 / m_FPS; // rafraichissement chaque 0.0166666 secondes
+        double drawInterval = 1_000_000_000.0 / m_FPS; // rafraichissement chaque 0.0166666 secondes
         double nextDrawTime = System.nanoTime() + drawInterval;
 
         while (m_gameThread != null) { //Tant que le thread du jeu est actif
@@ -101,19 +102,37 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         boolean collision = false;
         boolean pickable = false;
+        boolean ground_reached = false;
+
+        m_player.pre_update();
+
 //        System.out.println("unlivingEntities = " + unlivingEntities);
         for (UnlivingEntity unlivingEntity :
                 unlivingEntities) {
+
+            if(
+                    unlivingEntity.position.getY() < m_player.futurePosition().getY() + m_player.height &&
+                    unlivingEntity.position.getY() + unlivingEntity.height > m_player.futurePosition().getY() &&
+                    unlivingEntity.position.getX() < m_player.position.getX() + m_player.width &&
+                    unlivingEntity.position.getX() + unlivingEntity.width > m_player.position.getX() &&
+                    !ground_reached
+            ) {
+                System.out.println("unlivingEntity.position = " + unlivingEntity.position);
+                System.out.println("m_player.position = " + m_player.position);
+                m_player.touches_ground();
+                ground_reached = true;
+            }
+
             if (unlivingEntity.position.getX() < m_player.futurePosition().getX() + m_player.width &&
                     unlivingEntity.position.getX() + unlivingEntity.width > m_player.futurePosition().getX() &&
                     unlivingEntity.position.getY() < m_player.futurePosition().getY() + m_player.height &&
                     unlivingEntity.height + unlivingEntity.position.getY() > m_player.futurePosition().getY()) {
 
 //                System.out.println(m_player.futurePosition());
-//                System.out.println(unlivingEntity.position);
+                //System.out.println(unlivingEntity.position);
 //                System.out.println("----");
                 collision = true;
-                if(unlivingEntity.pickable) pickable=true;
+                if (unlivingEntity.pickable) pickable = true;
             }
         }
         m_player.update(collision, pickable);
