@@ -15,7 +15,7 @@ public class Portent extends UnlivingEntity{
     GamePanel m_gp;
 
     public Portent(GamePanel a_gp, int x, int y){
-        super(x,y,20,20);
+        super(x,y,20,20, false);
         open=false;
         this.getPorteImage();
         this.m_gp = a_gp;

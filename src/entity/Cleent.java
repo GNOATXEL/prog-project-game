@@ -15,7 +15,7 @@ public class Cleent extends UnlivingEntity{
     GamePanel m_gp;
 
     public Cleent(GamePanel a_gp, int x, int y){
-        super(x,y,20,20);
+        super(x,y,20,20, false);
         picked=false;
         this.getCleentImage();
         this.m_gp = a_gp;
