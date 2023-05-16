@@ -90,7 +90,7 @@ public class TileManager {
                     int num = Integer.parseInt(numbers[col]);
                     m_mapTileNum[col][row] = num;
 
-                    UnlivingEntity entity = new UnlivingEntity(0, 0, 0, 0);
+                    UnlivingEntity entity = new UnlivingEntity(0, 0, 0, 0, false);
                     ;
 
                     if (num >= 1 && num <= 9) {

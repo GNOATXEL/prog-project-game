@@ -58,8 +58,9 @@ public class Player extends Entity {
     /**
      * Mise à jour des données du joueur
      */
-    public void update(boolean collision) {
+    public void update(boolean collision, boolean pickable) {
         if (!collision) position = futurePosition();
+        else if (collision && pickable) position = futurePosition();
     }
 
     public Vector2 futurePosition() {

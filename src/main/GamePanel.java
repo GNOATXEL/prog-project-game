@@ -97,6 +97,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     public void update() {
         boolean collision = false;
+        boolean pickable = false;
         for (UnlivingEntity unlivingEntity :
                 unlivingEntities) {
             if (unlivingEntity.position.getX() < m_player.futurePosition().getX() + m_player.width &&
@@ -104,9 +105,10 @@ public class GamePanel extends JPanel implements Runnable {
                     unlivingEntity.position.getY() < m_player.futurePosition().getY() + m_player.height &&
                     unlivingEntity.height + unlivingEntity.position.getY() > m_player.futurePosition().getY()) {
                 collision = true;
+                if(unlivingEntity.pickable) pickable=true;
             }
         }
-        m_player.update(collision);
+        m_player.update(collision, pickable);
     }
 
     /**
