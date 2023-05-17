@@ -1,13 +1,25 @@
 package main;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
+
+
 import entity.*;
 import lib.Vector2;
 import musica.MusicPlayer;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
+import musica.MusicPlayer;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -119,6 +131,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         double drawInterval = 1_000_000_000.0 / m_FPS; // rafraichissement chaque 0.0166666 secondes
         double nextDrawTime = System.nanoTime() + drawInterval;
+
         MusicPlayer zik = new MusicPlayer(String.valueOf(new File("res/zik/zikrandom.wav")));
         Thread OST = new Thread(zik);
         OST.start();
@@ -157,6 +170,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         setCurrentUnlivingEntities(m_panel);
         boolean pickable = false; //TODO : mettre les pickables
+//      System.out.println("unlivingEntities = " + unlivingEntities);
+        m_player.update( pickable);
+        if(m_player.futurePosition().getX()>=780 && m_player.getTile()==0){
         m_player.update(pickable);
 
         if (m_player.futurePosition().getX() >= 780 && m_player.getTile() == 0) {
@@ -269,3 +285,5 @@ public class GamePanel extends JPanel implements Runnable {
 
 }
 
+
+}
