@@ -134,7 +134,6 @@ public class GamePanel extends JPanel implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        m_player.update(false);
     }
 
     public boolean collideSol() {
