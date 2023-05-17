@@ -22,6 +22,8 @@ public class Player extends LivingEntity {
     public int m_vie;
     long lastDamageTaken;
 
+    int tile = 0;
+
     /**
      * Constructeur de Player
      *
@@ -124,6 +126,14 @@ public class Player extends LivingEntity {
             m_vie = 0;
         }
         return false;
+    }
+
+    public void nextTile(){
+        tile++;
+    }
+
+    public int getTile(){
+        return tile;
     }
 
     public Vector2 futurePosition() {

@@ -30,8 +30,8 @@ public class Cleent extends UnlivingEntity{
 
     public void update(){
         if(picked=true){
-            position.setX(24);
-            position.setX(936);
+            position.setX(20);
+            position.setX(740);
         }
 
     }

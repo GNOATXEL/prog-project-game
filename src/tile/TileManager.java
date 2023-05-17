@@ -2,6 +2,7 @@ package tile;
 
 import entity.Brick;
 import entity.Spike;
+import entity.Cleent;
 import entity.UnlivingEntity;
 import main.GamePanel;
 
@@ -32,14 +33,14 @@ public class TileManager {
      *
      * @param gp
      */
-    public TileManager(GamePanel gp) {
+    public TileManager(GamePanel gp, String path) {
         this.m_gp = gp;
         m_tile = new Tile[m_maxTiles];
         m_mapTileNum = new int[gp.MAX_SCREEN_COL][gp.MAX_SCREE_ROW];
         unlivingEntities = new HashSet<>();
 
         this.getTileImage();
-        this.loadMap("/maps/map1_part6.txt");
+        this.loadMap(path);
 
         try {
             m_gp.HEART_ICON = ImageIO.read(getClass().getResource("/tiles/COEURPLEIN.png"));
@@ -51,6 +52,10 @@ public class TileManager {
 
     public HashSet<UnlivingEntity> getUnlivingEntities() {
         return unlivingEntities;
+    }
+
+    public void addUnlivingEntities(Cleent cle) {
+        unlivingEntities.add(cle);
     }
 
     /**
