@@ -200,6 +200,8 @@ public class GamePanel extends JPanel implements Runnable {
                 if(entity.position.getX()-20<m_player.position.getX() && entity.position.getX()+40>m_player.position.getX() && entity.position.getY()-20<m_player.position.getY() && entity.position.getY()+40>m_player.position.getY()){
                     ((Cleent) entity).quoicouPicked();
                     ((Cleent) entity).update();
+                    m_unlivingEntitiesList.get(2).add(entity);
+                    m_player.setCleent(true);
                 }
 
                 if(entity.position.getX()-20<m_player.position.getX() && entity.position.getX()+40>m_player.position.getX() && entity.position.getY()-20<m_player.position.getY() && entity.position.getY()+40>m_player.position.getY()){
@@ -225,9 +227,9 @@ public class GamePanel extends JPanel implements Runnable {
         for (UnlivingEntity unlivingEntity :
                 currentUnlivingEntities) {
             Vector2 pos = m_player.futurePosition();
-            if (unlivingEntity instanceof Sol && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
+            if (((unlivingEntity instanceof Sol || (unlivingEntity instanceof Grille && !(m_player.statusCleent()))) && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
                     pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
-                    pos.getX() + m_player.width > unlivingEntity.position.getX()) {
+                    pos.getX() + m_player.width > unlivingEntity.position.getX())) {
                 return true;
             } else if (unlivingEntity instanceof Spike && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
                     pos.getX() + m_player.width > unlivingEntity.position.getX() &&

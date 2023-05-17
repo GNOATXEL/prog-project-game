@@ -19,6 +19,8 @@ public class Player extends LivingEntity {
     int y;
     long lastDamageTaken;
 
+    boolean hasCleent=false;
+
     int tile = 0;
 
     /**
@@ -149,6 +151,14 @@ public class Player extends LivingEntity {
 
     public int getTile() {
         return tile;
+    }
+
+    public void setCleent(boolean oui) {
+        hasCleent=oui;
+    }
+
+    public boolean statusCleent() {
+        return hasCleent;
     }
 
     public Vector2 futurePosition() {
