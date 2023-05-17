@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -103,7 +104,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         double drawInterval = 1000000000 / m_FPS; // rafraichissement chaque 0.0166666 secondes
         double nextDrawTime = System.nanoTime() + drawInterval;
-        MusicPlayer zik = new MusicPlayer("C:/Users/axel/IdeaProjects/test/res/zikrandom.wav");
+        MusicPlayer zik = new MusicPlayer(String.valueOf(new File("res/zik/zikrandom.wav")));
         Thread OST = new Thread(zik);
         OST.start();
         while (m_gameThread != null) { //Tant que le thread du jeu est actif
