@@ -8,14 +8,19 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Objects;
 
 public class Player extends LivingEntity {
     KeyHandler m_keyH;
     int vertical_speed;
     int compteurSaut;
+    int acc;
+    int y;
+    boolean isFalling;
 
-    int m_vie;
+    public int m_vie;
+    long lastDamageTaken;
 
     /**
      * Constructeur de Player
@@ -31,6 +36,7 @@ public class Player extends LivingEntity {
 
         width = larg;
         height = haut;
+        isFalling=false;
         m_vie=3;
     }
 
@@ -39,9 +45,12 @@ public class Player extends LivingEntity {
      */
     protected void setDefaultValues() {
         // TODO: à modifier sûrement
-        position = new Vector2(50, 520);
+        position = new Vector2(50, 525);
         m_speed = 4;
         compteurSaut = 0;
+        acc = m_gp.GRAVITY;
+        y=0;
+        lastDamageTaken = new Date().getTime();
     }
 
     /**
@@ -59,35 +68,68 @@ public class Player extends LivingEntity {
     /**
      * Mise à jour des données du joueur
      */
-    public void update(boolean collision, boolean pickable) {
-        if (!collision) {
+    public void update(boolean pickable) {
+        if (!m_gp.collide()) {
             if (m_keyH.is_jumping && compteurSaut < 20) {
+                isFalling=false;
                 position = futurePosition();
                 compteurSaut++;
-
+                acc=0;
+                vertical_speed=0;
             } else {
-                position = fall();
+                isFalling=true;
+                position=futurePosition();
+                fall();
             }
-        } else if (collision && pickable) {
-            position = futurePosition();
-            vertical_speed = 0;
-            if(!m_keyH.is_jumping) compteurSaut = 0;
-        } else {
-            position = futurePosition();
-            vertical_speed = 0;
-            if(!m_keyH.is_jumping) compteurSaut = 0;
+        }else {
+            isFalling=false;
+            if (pickable) {
+                position = futurePosition();
+                vertical_speed = 0;
+                acc = 0;
+            }
+            if (!m_keyH.is_jumping) {
+                compteurSaut = 0;
+                vertical_speed = 0;
+                acc = 0;
+            }
         }
 
         System.out.println(futurePosition());
     }
 
-    public Vector2 fall() {
-        Vector2 chute = new Vector2(0, m_gp.GRAVITY);
-        return position.addVector(chute);
+    public void fall() {
+        for(int i = 0 ; i<m_gp.GRAVITY;i++){
+            if(!m_gp.collide()) {
+                position.addY(1);
+            } else {
+                return;
+            }
+        }
+    }
+
+    public boolean takingDamage(int dmg) {
+        long currentTime = new Date().getTime();
+
+        position.setX(50);
+        position.setY(525);
+
+        if(lastDamageTaken + 1 * 1000 < currentTime) {
+            lastDamageTaken = currentTime;
+
+            if (m_vie - dmg > 0) {
+                m_vie -= dmg;
+                return true;
+            }
+            m_vie = 0;
+        }
+        return false;
     }
 
     public Vector2 futurePosition() {
-        return position.addVector(m_keyH.directions);
+        Vector2 res=new Vector2(m_keyH.directions.scalarMultiplication(m_speed));
+        if(isFalling) res.addY(1);
+        return position.addVector(res);
     }
 
     /**
@@ -100,5 +142,16 @@ public class Player extends LivingEntity {
         BufferedImage l_image = m_idleImage;
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
         a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+
+        // affiche la vie
+        for (int i = 0; i < m_vie; i++) {
+            a_g2.drawImage(m_gp.HEART_ICON, m_gp.TILE_SIZE * (i+1), m_gp.TILE_SIZE, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+        }
+        for (int i = 0; i < (3-m_vie); i++) {
+            a_g2.drawImage(m_gp.HEART_EMPTY_ICON, m_gp.TILE_SIZE * (3 - i), m_gp.TILE_SIZE, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+        }
+
     }
+
+
 }
