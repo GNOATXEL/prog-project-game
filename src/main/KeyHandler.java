@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener{
 	public Vector2 directions = new Vector2(0, 0);
 	public boolean is_jumping = false;
+	public boolean takes_damage = false;
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -36,6 +37,7 @@ public class KeyHandler implements KeyListener{
 			}
 			//bas
 			case 83 -> directions.setY(1);
+			case KeyEvent.VK_V -> takes_damage = true;
 
 		}
 
@@ -58,6 +60,8 @@ public class KeyHandler implements KeyListener{
 			}
 			//bas
 			case 83-> directions.setY(0);
+			case KeyEvent.VK_V -> takes_damage = false;
+
 		}
 	}
 

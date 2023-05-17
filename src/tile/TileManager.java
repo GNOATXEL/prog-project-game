@@ -1,6 +1,7 @@
 package tile;
 
 import entity.Brick;
+import entity.Spike;
 import entity.UnlivingEntity;
 import main.GamePanel;
 
@@ -10,7 +11,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Gestionnaire des tiles du jeu
@@ -35,6 +40,13 @@ public class TileManager {
 
         this.getTileImage();
         this.loadMap("/maps/map1_part6.txt");
+
+        try {
+            m_gp.HEART_ICON = ImageIO.read(getClass().getResource("/tiles/COEURPLEIN.png"));
+            m_gp.HEART_EMPTY_ICON = ImageIO.read(getClass().getResource("/tiles/COEURVIDE.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public HashSet<UnlivingEntity> getUnlivingEntities() {
@@ -160,8 +172,12 @@ public class TileManager {
 
                     UnlivingEntity entity = new UnlivingEntity(0, 0, 0, 0, false);
 
-                    if (num >= 1 && num <= 9 || num == 12) { //TODO : mettre le sol lol bref
-                        entity = new Brick(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                    Integer[] spikesArray = new Integer[]{10, 11, 14, 17, 20, 21, 22, 23};
+                    List<Integer> spikes = Arrays.asList(spikesArray);
+                    if (spikes.contains(num)) {
+                        entity = new Spike(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                    } else if (num != 0 && num != 13 && num != 18 && num != 19) { //TODO : mettre le sol lol bref
+                        entity = new Brick(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
 
                     unlivingEntities.add(entity);
