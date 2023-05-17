@@ -66,7 +66,7 @@ public class Player extends LivingEntity {
      */
     public void update(boolean pickable) {
         if (!m_gp.collideSol()) { //on n'est pas sur le sol
-            if (m_keyH.is_jumping && compteurSaut < 20) { //mais on saute donc normal
+            if (m_keyH.is_jumping && compteurSaut < 30) { //mais on saute donc normal
                 if (!m_gp.collideMP()) position = futurePosition();
                 compteurSaut++;
             } else {
@@ -110,6 +110,9 @@ public class Player extends LivingEntity {
             m_vie = 0;
         }
         return false;
+    }
+    public void addLife(int hp){
+        m_vie+=hp;
     }
 
     public void nextTile() {
