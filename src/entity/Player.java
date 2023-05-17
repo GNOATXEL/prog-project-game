@@ -19,7 +19,8 @@ public class Player extends LivingEntity {
     int y;
     boolean isFalling;
 
-    public int m_vie;
+    public BufferedImage m_idleImage2;
+
     long lastDamageTaken;
 
     int tile = 0;
@@ -61,7 +62,8 @@ public class Player extends LivingEntity {
     public void getImage() {
         //gestion des exceptions
         try {
-            m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/superhero.png")));
+            m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/joueur1.png")));
+            m_idleImage2 = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/joueur2.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

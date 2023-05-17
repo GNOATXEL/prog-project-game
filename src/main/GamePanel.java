@@ -9,10 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 
-import entity.Cleent;
-import entity.Player;
-import entity.Spike;
-import entity.UnlivingEntity;
+import entity.*;
 import lib.Vector2;
 import tile.TileManager;
 
@@ -53,6 +50,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler m_keyH;
     Thread m_gameThread;
     Player m_player;
+    Enemy m_enemy;
     int m_panel;
     TileManager[] m_tileM;
 
@@ -73,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
         //m_player = new Player(this, m_keyH, 16, 32);
         m_tileM = new TileManager[6];
         m_panel=0;
+        m_enemy = new Boss(this, 16*SCALE, 16*SCALE, 500, 160);
 
         m_tileM[0] = new TileManager(this,"/maps/map1_part1.txt");
 
@@ -154,9 +153,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         boolean collision = false;
         boolean pickable = false; //TODO : mettre les pickables
-//        System.out.println("unlivingEntities = " + unlivingEntities);
+//      System.out.println("unlivingEntities = " + unlivingEntities);
         m_player.update( pickable);
-
+        m_enemy.update();
         if(m_player.futurePosition().getX()>=780 && m_player.getTile()==0){
             m_player.nextTile();
             this.nextPanel();
@@ -238,6 +237,7 @@ public class GamePanel extends JPanel implements Runnable {
         if(m_gameThread != null) {
             m_tileM[m_panel].draw(g2);
             m_player.draw(g2);
+            m_enemy.draw(g2);
             if (this.m_panel == 1) {
                 for (UnlivingEntity entity : unlivingEntities2) {
                     drawEntity(g2, entity);
@@ -250,7 +250,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void nextPanel() {
         m_panel++;
     }
-    public void drawEntity(Graphics2D a_g2, UnlivingEntity entity) {
+    public void drawEntity(Graphics2D a_g2, Entity entity) {
         // récupère l'image du joueur
         BufferedImage l_image = entity.m_idleImage;
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
