@@ -13,12 +13,12 @@ import java.util.Objects;
 
 public class Player extends LivingEntity {
     public static int VIE_MAX = 3;
-    private final Vector2[] positionsDepart;
     public int m_vie;
     KeyHandler m_keyH;
     int compteurSaut;
     long lastDamageTaken;
     int tile = 0;
+    private Vector2[] positionsDepart;
 
     /**
      * Constructeur de Player
@@ -28,6 +28,7 @@ public class Player extends LivingEntity {
      */
     public Player(GamePanel a_gp, KeyHandler a_keyH, int larg, int haut) {
         super(a_gp, larg, haut);
+
         this.getImage();
         this.m_keyH = a_keyH;
         this.setDefaultValues();
@@ -35,14 +36,14 @@ public class Player extends LivingEntity {
         width = larg;
         height = haut;
         m_vie = VIE_MAX;
-        positionsDepart = new Vector2[]{new Vector2(50, 525), new Vector2(50, 50), new Vector2(30, 150),
-                new Vector2(650, 50), new Vector2(720, 520), new Vector2(720, 50), new Vector2(720, 520)};
     }
 
     /**
      * Initialisation des données membres avec des valeurs par défaut
      */
     protected void setDefaultValues() {
+        positionsDepart = new Vector2[]{new Vector2(50, 525), new Vector2(50, 50), new Vector2(30, 150),
+                new Vector2(650, 50), new Vector2(720, 520), new Vector2(720, 50), new Vector2(720, 520)};
         position = positionsDepart[0];
         m_speed = 4;
         compteurSaut = 0;
@@ -57,7 +58,7 @@ public class Player extends LivingEntity {
         try {
             m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/superhero.png")));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Image du héros non trouvée.");
         }
     }
 
@@ -95,7 +96,7 @@ public class Player extends LivingEntity {
         }
     }
 
-    public boolean takingDamage(int dmg) {
+    public void takingDamage(int dmg) {
         long currentTime = new Date().getTime();
 
         position = positionsDepart[getTile()];
@@ -105,14 +106,14 @@ public class Player extends LivingEntity {
 
             if (m_vie - dmg > 0) {
                 m_vie -= dmg;
-                return true;
+                return;
             }
             m_vie = 0;
         }
-        return false;
     }
-    public void addLife(int hp){
-        m_vie+=hp;
+
+    public void addLife(int hp) {
+        m_vie += hp;
     }
 
     public void nextTile() {
