@@ -10,7 +10,9 @@ import java.io.IOException;
 
 
 import entity.Cleent;
+import entity.Brick;
 import entity.Player;
+import entity.Sol;
 import entity.Spike;
 import entity.UnlivingEntity;
 import lib.Vector2;
@@ -155,7 +157,7 @@ public class GamePanel extends JPanel implements Runnable {
         boolean collision = false;
         boolean pickable = false; //TODO : mettre les pickables
 //        System.out.println("unlivingEntities = " + unlivingEntities);
-        m_player.update( pickable);
+        m_player.update(pickable);
 
         if(m_player.futurePosition().getX()>=780 && m_player.getTile()==0){
             m_player.nextTile();
@@ -206,6 +208,46 @@ public class GamePanel extends JPanel implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean collideSol() {
+        for (UnlivingEntity unlivingEntity :
+                unlivingEntities) {
+            Vector2 pos = m_player.futurePosition();
+            if (unlivingEntity instanceof Sol && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
+                    pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + m_player.width > unlivingEntity.position.getX() ) {
+                return true;
+            }
+            if (unlivingEntity instanceof Spike && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + m_player.width > unlivingEntity.position.getX() &&
+                    pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
+                    m_player.height + pos.getY()  > unlivingEntity.position.getY()) {
+
+                    m_player.takingDamage(1);
+            }
+        }
+        return false;
+    }
+
+    public boolean collideMP() {
+        for (UnlivingEntity unlivingEntity :
+                unlivingEntities) {
+            Vector2 pos=m_player.futurePosition();
+            if (unlivingEntity instanceof Brick && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + m_player.width > unlivingEntity.position.getX() &&
+                    pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height && //mettre -1 en Y et verif
+                    pos.getY() + m_player.height  < unlivingEntity.position.getY()) {
+                return true;
+            }
+            if(unlivingEntity instanceof Spike && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
+                    pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + m_player.width > unlivingEntity.position.getX()) {
+                m_player.takingDamage(1);
+                return false;
+            }
+        }
+        return false;
     }
 
     public boolean collide() {
