@@ -1,13 +1,17 @@
 package main;
 
 import entity.Player;
+import entity.Spike;
 import entity.UnlivingEntity;
 import lib.Vector2;
 import tile.TileManager;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Panel principal du jeu contenant la map principale
@@ -25,6 +29,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public final int GRAVITY = 7;
     public final int TERMINAL_VELOCITY = 300;
+    public Image HEART_ICON;
+    public Image HEART_EMPTY_ICON;
+    private Image gameOverBackground;
 
     // FPS : taux de rafraichissement
     int m_FPS;
@@ -105,6 +112,26 @@ public class GamePanel extends JPanel implements Runnable {
         boolean pickable = false; //TODO : mettre les pickables
 //        System.out.println("unlivingEntities = " + unlivingEntities);
         m_player.update( pickable);
+
+        if(m_keyH.takes_damage) {
+            m_player.takingDamage(1);
+            m_keyH.takes_damage = false;
+        }
+
+        if(m_player.m_vie <= 0) {
+            gameOver();
+        }
+    }
+
+    private void gameOver() {
+        m_gameThread.interrupt();
+        m_gameThread = null;
+
+        try {
+            gameOverBackground = ImageIO.read(Objects.requireNonNull(getClass().getResource("/game_over.png")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean collide() {
@@ -116,6 +143,9 @@ public class GamePanel extends JPanel implements Runnable {
                     pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
                     m_player.height + pos.getY()  > unlivingEntity.position.getY()) {
 
+                if(unlivingEntity instanceof Spike) {
+                    m_player.takingDamage(1);
+                }
 //                System.out.println(m_player.futurePosition());
 //                System.out.println(unlivingEntity.position);
 //                System.out.println("----");
@@ -131,8 +161,11 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        m_tileM.draw(g2);
-        m_player.draw(g2);
+        if(m_gameThread != null) {
+            m_tileM.draw(g2);
+            m_player.draw(g2);
+        }
+        g2.drawImage(gameOverBackground, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
         g2.dispose();
     }
 
