@@ -194,6 +194,20 @@ public class GamePanel extends JPanel implements Runnable {
         if (m_player.m_vie <= 0) {
             gameOver();
         }
+
+        for (UnlivingEntity entity : currentUnlivingEntities){
+            if(entity instanceof Cleent){
+                if(entity.position.getX()-20<m_player.position.getX() && entity.position.getX()+40>m_player.position.getX() && entity.position.getY()-20<m_player.position.getY() && entity.position.getY()+40>m_player.position.getY()){
+                    ((Cleent) entity).quoicouPicked();
+                    ((Cleent) entity).update();
+                }
+
+                if(entity.position.getX()-20<m_player.position.getX() && entity.position.getX()+40>m_player.position.getX() && entity.position.getY()-20<m_player.position.getY() && entity.position.getY()+40>m_player.position.getY()){
+                    ((Coeur) entity).quoicouPicked();
+                    ((Coeur) entity).update();
+                }
+            }
+        }
     }
 
     private void gameOver() {
