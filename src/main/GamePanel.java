@@ -6,7 +6,6 @@ import musica.MusicPlayer;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -210,7 +209,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public boolean collideSol() {
         for (UnlivingEntity unlivingEntity :
-                unlivingEntities) {
+                currentUnlivingEntities) {
             Vector2 pos = m_player.futurePosition();
             if (unlivingEntity instanceof Sol && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
                     pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
@@ -228,7 +227,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public boolean collideMP() {
         for (UnlivingEntity unlivingEntity :
-                unlivingEntities) {
+                currentUnlivingEntities) {
             Vector2 pos = m_player.futurePosition();
             if (unlivingEntity instanceof Brick && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
                     pos.getX() + m_player.width > unlivingEntity.position.getX() &&
