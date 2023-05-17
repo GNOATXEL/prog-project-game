@@ -19,6 +19,7 @@ public class TileManager {
     int m_maxTiles = 30;    //nombre maximum de tiles chargeable dans le jeu
     int[][] m_mapTileNum;    //répartition des tiles dans la carte du jeu
     HashSet<UnlivingEntity> unlivingEntities;
+    HashSet<Enemy> livingEntities;
 
     /**
      * Constructeur
@@ -30,6 +31,7 @@ public class TileManager {
         m_tile = new Tile[m_maxTiles];
         m_mapTileNum = new int[gp.MAX_SCREEN_COL][gp.MAX_SCREE_ROW];
         unlivingEntities = new HashSet<>();
+        livingEntities = new HashSet<>();
 
         this.getTileImage();
         this.loadMap(path);
@@ -46,8 +48,16 @@ public class TileManager {
         return unlivingEntities;
     }
 
+    public HashSet<Enemy> getLivingEntities() {
+        return livingEntities;
+    }
+
     public void addUnlivingEntities(UnlivingEntity machin) {
         unlivingEntities.add(machin);
+    }
+
+    public void addLivingEntities(Enemy machin) {
+        livingEntities.add(machin);
     }
 
     /**

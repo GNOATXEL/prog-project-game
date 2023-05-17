@@ -1,16 +1,19 @@
 package main;
 
+import java.io.File;
+import java.io.IOException;
+
+
 import entity.*;
 import lib.Vector2;
 import musica.MusicPlayer;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
@@ -48,6 +51,18 @@ public class GamePanel extends JPanel implements Runnable {
     HashSet<UnlivingEntity> unlivingEntities7;
     ArrayList<HashSet<UnlivingEntity>> m_unlivingEntitiesList = new ArrayList<>(7);
     HashSet<UnlivingEntity> currentUnlivingEntities;
+
+    //living entities
+    HashSet<Enemy> livingEntities;
+    HashSet<Enemy> livingEntities2;
+    HashSet<Enemy> livingEntities3;
+    HashSet<Enemy> livingEntities4;
+    HashSet<Enemy> livingEntities5;
+    HashSet<Enemy> livingEntities6;
+    HashSet<Enemy> livingEntities7;
+    ArrayList<HashSet<Enemy>> m_livingEntitiesList = new ArrayList<>(7);
+    HashSet<Enemy> currentLivingEntities;
+
     private Image gameOverBackground;
 
     /**
@@ -73,9 +88,22 @@ public class GamePanel extends JPanel implements Runnable {
         Cleent cle = new Cleent(this, 170, 550);
         m_tileM[1].addUnlivingEntities(cle);
 
+        Garde garde = new Garde(this, 20*SCALE, 20*SCALE, 500, 160);
+        m_tileM[1].addLivingEntities(garde);
+
+        Garde garde2 = new Garde(this, 20*SCALE, 20*SCALE, 190, 522);
+        m_tileM[2].addLivingEntities(garde2);
+
+        Garde garde3 = new Garde(this, 20*SCALE, 20*SCALE, 520, 402);
+        m_tileM[5].addLivingEntities(garde3);
 
         Coeur coeur = new Coeur(this, 60, 300);
         m_tileM[3].addUnlivingEntities(coeur);
+
+        Boss boss = new Boss(this, 40*SCALE, 40*SCALE, 280, 600);
+        m_tileM[6].addLivingEntities(boss);
+
+
 
         unlivingEntities = m_tileM[0].getUnlivingEntities();
         unlivingEntities2 = m_tileM[1].getUnlivingEntities();
@@ -85,6 +113,14 @@ public class GamePanel extends JPanel implements Runnable {
         unlivingEntities6 = m_tileM[5].getUnlivingEntities();
         unlivingEntities7 = m_tileM[6].getUnlivingEntities();
 
+        livingEntities = m_tileM[0].getLivingEntities();
+        livingEntities2 = m_tileM[1].getLivingEntities();
+        livingEntities3 = m_tileM[2].getLivingEntities();
+        livingEntities4 = m_tileM[3].getLivingEntities();
+        livingEntities5 = m_tileM[4].getLivingEntities();
+        livingEntities6 = m_tileM[5].getLivingEntities();
+        livingEntities7 = m_tileM[6].getLivingEntities();
+
         m_unlivingEntitiesList.add(0, unlivingEntities);
         m_unlivingEntitiesList.add(1, unlivingEntities2);
         m_unlivingEntitiesList.add(2, unlivingEntities3);
@@ -93,6 +129,14 @@ public class GamePanel extends JPanel implements Runnable {
         m_unlivingEntitiesList.add(5, unlivingEntities6);
         m_unlivingEntitiesList.add(6, unlivingEntities7);
 
+        m_livingEntitiesList.add(0, livingEntities);
+        m_livingEntitiesList.add(1, livingEntities2);
+        m_livingEntitiesList.add(2, livingEntities3);
+        m_livingEntitiesList.add(3, livingEntities4);
+        m_livingEntitiesList.add(4, livingEntities5);
+        m_livingEntitiesList.add(5, livingEntities6);
+        m_livingEntitiesList.add(6, livingEntities7);
+
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -100,6 +144,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
 
         setCurrentUnlivingEntities(m_panel);
+        setCurrentLivingEntities(m_panel);
     }
 
 
@@ -115,10 +160,15 @@ public class GamePanel extends JPanel implements Runnable {
         currentUnlivingEntities = m_unlivingEntitiesList.get(i);
     }
 
+    public void setCurrentLivingEntities(int i) {
+        currentLivingEntities = m_livingEntitiesList.get(i);
+    }
+
     public void run() {
 
         double drawInterval = 1_000_000_000.0 / m_FPS; // rafraichissement chaque 0.0166666 secondes
         double nextDrawTime = System.nanoTime() + drawInterval;
+
         MusicPlayer zik = new MusicPlayer(String.valueOf(new File("res/zik/zikrandom.wav")));
         Thread OST = new Thread(zik);
         OST.start();
@@ -155,9 +205,16 @@ public class GamePanel extends JPanel implements Runnable {
      */
     public void update() {
         setCurrentUnlivingEntities(m_panel);
+        setCurrentLivingEntities(m_panel);
+        for (Enemy entity : currentLivingEntities) {
+            entity.update();
+        }
         boolean pickable = false; //TODO : mettre les pickables
-        m_player.update(pickable);
-
+//      System.out.println("unlivingEntities = " + unlivingEntities);
+        m_player.update( pickable);
+        if(m_player.futurePosition().getX()>=780 && m_player.getTile()==0) {
+            m_player.update(pickable);
+        }
         if (m_player.futurePosition().getX() >= 780 && m_player.getTile() == 0) {
             m_player.nextTile();
             this.nextPanel();
@@ -269,6 +326,9 @@ public class GamePanel extends JPanel implements Runnable {
             for (UnlivingEntity entity : currentUnlivingEntities) {
                 drawEntity(g2, entity);
             }
+            for (LivingEntity entity : currentLivingEntities) {
+                drawEntity(g2, entity);
+            }
         }
         g2.drawImage(gameOverBackground, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
         g2.dispose();
@@ -278,7 +338,7 @@ public class GamePanel extends JPanel implements Runnable {
         m_panel++;
     }
 
-    public void drawEntity(Graphics2D a_g2, UnlivingEntity entity) {
+    public void drawEntity(Graphics2D a_g2, Entity entity) {
         // récupère l'image du joueur
         BufferedImage l_image = entity.m_idleImage;
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)

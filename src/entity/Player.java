@@ -18,6 +18,8 @@ public class Player extends LivingEntity {
     int compteurSaut;
     long lastDamageTaken;
 
+    public BufferedImage m_idleImage2;
+
     boolean hasCleent=false;
 
     int tile = 0;
@@ -59,7 +61,8 @@ public class Player extends LivingEntity {
     public void getImage() {
         // gestion des exceptions
         try {
-            m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/superhero.png")));
+            m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/joueur1.png")));
+            m_idleImage2 = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/joueur2.png")));
         } catch (IOException e) {
             System.out.println("Image du héros non trouvée.");
         }

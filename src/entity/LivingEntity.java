@@ -7,7 +7,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class LivingEntity extends Entity{
+    public int m_vie;
     GamePanel m_gp;
+    int compteur;
 
     public LivingEntity(GamePanel a_gp, int larg, int haut) {
         this.m_gp = a_gp;
