@@ -29,7 +29,7 @@ public class Cleent extends UnlivingEntity{
     }
 
     public void update(){
-        if(picked=true){
+        if(picked){
             position.setY(20);
             position.setX(740);
         }
@@ -41,7 +41,7 @@ public class Cleent extends UnlivingEntity{
         try {
             m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/pasvivant/cleent.png")));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Image de la cléent non trouvée.");
         }
     }
 

@@ -1,17 +1,11 @@
 package tile;
 
-import entity.Brick;
-import entity.Sol;
-import entity.Spike;
-import entity.UnlivingEntity;
+import entity.*;
 import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +35,8 @@ public class TileManager {
         this.loadMap(path);
 
         try {
-            m_gp.HEART_ICON = ImageIO.read(getClass().getResource("/tiles/COEURPLEIN.png"));
-            m_gp.HEART_EMPTY_ICON = ImageIO.read(getClass().getResource("/tiles/COEURVIDE.png"));
+            m_gp.HEART_ICON = ImageIO.read(new File("res/pasvivant/COEURPLEIN.png"));
+            m_gp.HEART_EMPTY_ICON = ImageIO.read(new File("res/pasvivant/COEURVIDE.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -146,6 +140,9 @@ public class TileManager {
             m_tile[27] = new Tile();
             m_tile[27].m_image = ImageIO.read(getClass().getResource("/tiles/COINTBL.png"));
 
+            m_tile[28] = new Tile();
+            m_tile[28].m_image = ImageIO.read(getClass().getResource("/tiles/GRILLE.png"));
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,8 +179,12 @@ public class TileManager {
                     } else if (num != 0 && num != 13 && num != 18 && num != 19 && num != 12 && num != 15 && num != 16 && num != 2 && num != 3 && num != 4) { //les briques (sans le fond ni le sol)
                         entity = new Brick(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
-                    if (num == 2 || num == 3 || num == 4 || num == 12 || num == 15 || num == 16) { //le sol
+                    if (num == 2 || num == 3 || num == 4 || num == 12 || num == 15 || num == 16 ) { //le sol
                         entity = new Sol(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                    }
+
+                    if (num == 28) { //le sol
+                        entity = new Grille(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
 
                     unlivingEntities.add(entity);
