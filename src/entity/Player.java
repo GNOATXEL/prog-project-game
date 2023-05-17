@@ -17,7 +17,7 @@ public class Player extends LivingEntity {
     int compteurSaut;
     int acc;
     int y;
-    boolean isFalling;
+
 
     public BufferedImage m_idleImage2;
 
@@ -39,7 +39,6 @@ public class Player extends LivingEntity {
 
         width = larg;
         height = haut;
-        isFalling=false;
         m_vie=3;
     }
 
@@ -73,6 +72,25 @@ public class Player extends LivingEntity {
      * Mise à jour des données du joueur
      */
     public void update(boolean pickable) {
+        if(!m_gp.collideSol()) { //on est pas sur le sol
+            if(m_keyH.is_jumping && compteurSaut < 20) { //mais on saute donc normal
+                if(!m_gp.collideMP()) position=futurePosition();
+                compteurSaut++;
+            } else {
+                if(!m_gp.collideMP()) position= futurePosition();
+                compteurSaut++;
+                fall();
+            }
+        } else { //sur le sol empeche jump dans murs
+            if(!m_gp.collideMP()){ //et pas dans un obstacle
+                position=futurePosition();
+                compteurSaut=0;
+            } else{
+                if(pickable) position=futurePosition();
+                if(!m_keyH.is_jumping) compteurSaut=0;
+            }
+        }
+       /*
         if (!m_gp.collide()) {
             if (m_keyH.is_jumping && compteurSaut < 20) {
                 isFalling=false;
@@ -84,8 +102,8 @@ public class Player extends LivingEntity {
                 isFalling=true;
                 position=futurePosition();
                 fall();
-            }
-        }else {
+            }*/
+        /*}else {
             isFalling=false;
             if (pickable) {
                 position = futurePosition();
@@ -97,14 +115,14 @@ public class Player extends LivingEntity {
                 vertical_speed = 0;
                 acc = 0;
             }
-        }
+        }*/
 
         System.out.println(futurePosition());
     }
 
     public void fall() {
-        for(int i = 0 ; i<m_gp.GRAVITY;i++){
-            if(!m_gp.collide()) {
+        for(int i = 0 ; i<m_gp.GRAVITY-1;i++){
+            if(!m_gp.collideSol()) {
                 position.addY(1);
             } else {
                 return;
@@ -139,9 +157,7 @@ public class Player extends LivingEntity {
     }
 
     public Vector2 futurePosition() {
-        Vector2 res=new Vector2(m_keyH.directions.scalarMultiplication(m_speed));
-        if(isFalling) res.addY(1);
-        return position.addVector(res);
+        return position.addVector(m_keyH.directions.scalarMultiplication(m_speed));
     }
 
     /**
