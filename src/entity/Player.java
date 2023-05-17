@@ -69,13 +69,14 @@ public class Player extends Entity {
     public void update(boolean pickable) {
         if(!m_gp.collideSol()) { //on est pas sur le sol
             if(m_keyH.is_jumping && compteurSaut < 20) { //mais on saute donc normal
-                position=futurePosition();
+                if(!m_gp.collideMP()) position=futurePosition();
                 compteurSaut++;
             } else {
                 if(!m_gp.collideMP()) position= futurePosition();
+                compteurSaut++;
                 fall();
             }
-        } else { //sur le sol
+        } else { //sur le sol empeche jump dans murs
             if(!m_gp.collideMP()){ //et pas dans un obstacle
                 position=futurePosition();
                 compteurSaut=0;
