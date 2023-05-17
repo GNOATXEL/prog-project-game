@@ -219,12 +219,11 @@ public class GamePanel extends JPanel implements Runnable {
                     pos.getX() + m_player.width > unlivingEntity.position.getX() ) {
                 return true;
             }
-            if (unlivingEntity instanceof Spike && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+            else if (unlivingEntity instanceof Spike && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
                     pos.getX() + m_player.width > unlivingEntity.position.getX() &&
                     pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
                     m_player.height + pos.getY()  > unlivingEntity.position.getY()) {
-
-                    m_player.takingDamage(1);
+                m_player.takingDamage(1);
             }
         }
         return false;
@@ -239,12 +238,6 @@ public class GamePanel extends JPanel implements Runnable {
                     pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height && //mettre -1 en Y et verif
                     pos.getY() + m_player.height  < unlivingEntity.position.getY()) {
                 return true;
-            }
-            if(unlivingEntity instanceof Spike && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
-                    pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
-                    pos.getX() + m_player.width > unlivingEntity.position.getX()) {
-                m_player.takingDamage(1);
-                return false;
             }
         }
         return false;
