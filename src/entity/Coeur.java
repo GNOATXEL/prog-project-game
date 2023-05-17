@@ -22,11 +22,16 @@ public class Coeur extends UnlivingEntity {
     }
 
     public void quoicouPicked() {
-        //gérer quand le joueur touche la clé (et la ramasse du coupent)
+        //gérer quand le joueur touche le coeur (et le ramasse du coupent)
         picked = true;
     }
 
     public void update() {
+        if(picked) {
+            position.setY(20);
+            position.setX(740);
+            m_gp.m_player.addLife(1);
+        }
     }
 
     public void getCoeurImage() {

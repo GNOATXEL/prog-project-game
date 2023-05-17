@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
     // Création des différentes instances (Player, KeyHandler, TileManager, GameThread ...)
     KeyHandler m_keyH;
     Thread m_gameThread;
-    Player m_player;
+    public Player m_player;
     int m_panel;
     TileManager[] m_tileM;
     HashSet<UnlivingEntity> unlivingEntities;
@@ -185,14 +185,31 @@ public class GamePanel extends JPanel implements Runnable {
             m_player.position.setX(750);
         }
 
-
         if (m_keyH.takes_damage) {
             m_player.takingDamage(1);
             m_keyH.takes_damage = false;
         }
 
+        if(m_keyH.getHP) {
+            m_player.addLife(1);
+            m_keyH.getHP = false;
+        }
+
         if (m_player.m_vie <= 0) {
             gameOver();
+        }
+        for (UnlivingEntity entity : currentUnlivingEntities){
+            if(entity instanceof Cleent){
+                if(entity.position.getX()-20<m_player.position.getX() && entity.position.getX()+40>m_player.position.getX() && entity.position.getY()-20<m_player.position.getY() && entity.position.getY()+40>m_player.position.getY()){
+                    ((Cleent) entity).quoicouPicked();
+                    ((Cleent) entity).update();
+                }
+
+                if(entity.position.getX()-20<m_player.position.getX() && entity.position.getX()+40>m_player.position.getX() && entity.position.getY()-20<m_player.position.getY() && entity.position.getY()+40>m_player.position.getY()){
+                    ((Coeur) entity).quoicouPicked();
+                    ((Coeur) entity).update();
+                }
+            }
         }
     }
 
@@ -266,6 +283,4 @@ public class GamePanel extends JPanel implements Runnable {
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
         a_g2.drawImage(l_image, entity.position.getX(), entity.position.getY(), this.TILE_SIZE, this.TILE_SIZE, null);
     }
-
 }
-
