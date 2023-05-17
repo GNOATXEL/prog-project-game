@@ -10,18 +10,15 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-/**
- * Défintition du comportement d'un joueur
- */
-public class Player extends Entity {
-
-    GamePanel m_gp;
+public class Player extends LivingEntity {
     KeyHandler m_keyH;
     int vertical_speed;
     int compteurSaut;
     int acc;
     int y;
     boolean isFalling;
+
+    int m_vie;
 
     /**
      * Constructeur de Player
@@ -30,14 +27,15 @@ public class Player extends Entity {
      * @param a_keyH KeyHandler, gestionnaire des touches
      */
     public Player(GamePanel a_gp, KeyHandler a_keyH, int larg, int haut) {
-        this.m_gp = a_gp;
+        super(a_gp, larg, haut);
+        this.getImage();
         this.m_keyH = a_keyH;
         this.setDefaultValues();
-        this.getPlayerImage();
 
         width = larg;
         height = haut;
         isFalling=false;
+        m_vie=3;
     }
 
     /**
@@ -55,7 +53,7 @@ public class Player extends Entity {
     /**
      * Récupération de l'image du personnage
      */
-    public void getPlayerImage() {
+    public void getImage() {
         //gestion des exceptions
         try {
             m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/superhero.png")));
