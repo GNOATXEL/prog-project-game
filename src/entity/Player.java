@@ -18,6 +18,8 @@ public class Player extends Entity {
     GamePanel m_gp;
     KeyHandler m_keyH;
 
+    int tile = 0;
+
     /**
      * Constructeur de Player
      *
@@ -60,6 +62,14 @@ public class Player extends Entity {
      */
     public void update(boolean collision) {
         if (!collision) position = futurePosition();
+    }
+
+    public void nextTile(){
+        tile++;
+    }
+
+    public int getTile(){
+        return tile;
     }
 
     public Vector2 futurePosition() {
