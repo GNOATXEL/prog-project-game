@@ -31,12 +31,12 @@ public class GamePanel extends JPanel implements Runnable {
     public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;    // 800
     public Image HEART_ICON;
     public Image HEART_EMPTY_ICON;
+    public Player m_player;
     // FPS : taux de rafraichissement
     int m_FPS;
     // Création des différentes instances (Player, KeyHandler, TileManager, GameThread ...)
     KeyHandler m_keyH;
     Thread m_gameThread;
-    public Player m_player;
     int m_panel;
     TileManager[] m_tileM;
     HashSet<UnlivingEntity> unlivingEntities;
@@ -190,7 +190,7 @@ public class GamePanel extends JPanel implements Runnable {
             m_keyH.takes_damage = false;
         }
 
-        if(m_keyH.getHP) {
+        if (m_keyH.getHP) {
             m_player.addLife(1);
             m_keyH.getHP = false;
         }
@@ -198,14 +198,14 @@ public class GamePanel extends JPanel implements Runnable {
         if (m_player.m_vie <= 0) {
             gameOver();
         }
-        for (UnlivingEntity entity : currentUnlivingEntities){
-            if(entity instanceof Cleent){
-                if(entity.position.getX()-20<m_player.position.getX() && entity.position.getX()+40>m_player.position.getX() && entity.position.getY()-20<m_player.position.getY() && entity.position.getY()+40>m_player.position.getY()){
+        for (UnlivingEntity entity : currentUnlivingEntities) {
+            if (entity instanceof Cleent) {
+                if (entity.position.getX() - 20 < m_player.position.getX() && entity.position.getX() + 40 > m_player.position.getX() && entity.position.getY() - 20 < m_player.position.getY() && entity.position.getY() + 40 > m_player.position.getY()) {
                     ((Cleent) entity).quoicouPicked();
                     ((Cleent) entity).update();
                 }
-
-                if(entity.position.getX()-20<m_player.position.getX() && entity.position.getX()+40>m_player.position.getX() && entity.position.getY()-20<m_player.position.getY() && entity.position.getY()+40>m_player.position.getY()){
+            } else if (entity instanceof Coeur) {
+                if (entity.position.getX() - 20 < m_player.position.getX() && entity.position.getX() + 40 > m_player.position.getX() && entity.position.getY() - 20 < m_player.position.getY() && entity.position.getY() + 40 > m_player.position.getY()) {
                     ((Coeur) entity).quoicouPicked();
                     ((Coeur) entity).update();
                 }
