@@ -12,14 +12,11 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Player extends LivingEntity {
+    public int m_vie;
     KeyHandler m_keyH;
-    int vertical_speed;
     int compteurSaut;
     int acc;
     int y;
-
-
-    public int m_vie;
     long lastDamageTaken;
 
     int tile = 0;
@@ -38,7 +35,7 @@ public class Player extends LivingEntity {
 
         width = larg;
         height = haut;
-        m_vie=3;
+        m_vie = 3;
     }
 
     /**
@@ -50,7 +47,7 @@ public class Player extends LivingEntity {
         m_speed = 4;
         compteurSaut = 0;
         acc = m_gp.GRAVITY;
-        y=0;
+        y = 0;
         lastDamageTaken = new Date().getTime();
     }
 
@@ -70,22 +67,22 @@ public class Player extends LivingEntity {
      * Mise à jour des données du joueur
      */
     public void update(boolean pickable) {
-        if(!m_gp.collideSol()) { //on est pas sur le sol
-            if(m_keyH.is_jumping && compteurSaut < 20) { //mais on saute donc normal
-                if(!m_gp.collideMP()) position=futurePosition();
+        if (!m_gp.collideSol()) { //on est pas sur le sol
+            if (m_keyH.is_jumping && compteurSaut < 20) { //mais on saute donc normal
+                if (!m_gp.collideMP()) position = futurePosition();
                 compteurSaut++;
             } else {
-                if(!m_gp.collideMP()) position= futurePosition();
+                if (!m_gp.collideMP()) position = futurePosition();
                 compteurSaut++;
                 fall();
             }
         } else { //sur le sol empeche jump dans murs
-            if(!m_gp.collideMP()){ //et pas dans un obstacle
-                position=futurePosition();
-                compteurSaut=0;
-            } else{
-                if(pickable) position=futurePosition();
-                if(!m_keyH.is_jumping) compteurSaut=0;
+            if (!m_gp.collideMP()) { //et pas dans un obstacle
+                position = futurePosition();
+                compteurSaut = 0;
+            } else {
+                if (pickable) position = futurePosition();
+                if (!m_keyH.is_jumping) compteurSaut = 0;
             }
         }
        /*
@@ -119,8 +116,8 @@ public class Player extends LivingEntity {
     }
 
     public void fall() {
-        for(int i = 0 ; i<m_gp.GRAVITY-1;i++){
-            if(!m_gp.collideSol()) {
+        for (int i = 0; i < m_gp.GRAVITY - 1; i++) {
+            if (!m_gp.collideSol()) {
                 position.addY(1);
             } else {
                 return;
@@ -134,7 +131,7 @@ public class Player extends LivingEntity {
         position.setX(50);
         position.setY(525);
 
-        if(lastDamageTaken + 1 * 1000 < currentTime) {
+        if (lastDamageTaken + 1000 < currentTime) {
             lastDamageTaken = currentTime;
 
             if (m_vie - dmg > 0) {
@@ -146,11 +143,11 @@ public class Player extends LivingEntity {
         return false;
     }
 
-    public void nextTile(){
+    public void nextTile() {
         tile++;
     }
 
-    public int getTile(){
+    public int getTile() {
         return tile;
     }
 
@@ -171,9 +168,9 @@ public class Player extends LivingEntity {
 
         // affiche la vie
         for (int i = 0; i < m_vie; i++) {
-            a_g2.drawImage(m_gp.HEART_ICON, m_gp.TILE_SIZE * (i+1), m_gp.TILE_SIZE, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+            a_g2.drawImage(m_gp.HEART_ICON, m_gp.TILE_SIZE * (i + 1), m_gp.TILE_SIZE, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
         }
-        for (int i = 0; i < (3-m_vie); i++) {
+        for (int i = 0; i < (3 - m_vie); i++) {
             a_g2.drawImage(m_gp.HEART_EMPTY_ICON, m_gp.TILE_SIZE * (3 - i), m_gp.TILE_SIZE, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
         }
 

@@ -3,7 +3,6 @@ package tile;
 import entity.Brick;
 import entity.Sol;
 import entity.Spike;
-import entity.Cleent;
 import entity.UnlivingEntity;
 import main.GamePanel;
 
@@ -13,9 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class TileManager {
     GamePanel m_gp;            //panel du jeu principal
     Tile[] m_tile;            //tableau de toutes les tiles possibles dans le jeu
     int m_maxTiles = 30;    //nombre maximum de tiles chargeable dans le jeu
-    int m_mapTileNum[][];    //répartition des tiles dans la carte du jeu
+    int[][] m_mapTileNum;    //répartition des tiles dans la carte du jeu
     HashSet<UnlivingEntity> unlivingEntities;
 
     /**
@@ -172,7 +169,7 @@ public class TileManager {
             while (col < m_gp.MAX_SCREEN_COL && row < m_gp.MAX_SCREE_ROW) {
                 String line = br.readLine();
                 while (col < m_gp.MAX_SCREEN_COL) {
-                    String numbers[] = line.split("\t");
+                    String[] numbers = line.split("\t");
                     int num = Integer.parseInt(numbers[col]);
                     m_mapTileNum[col][row] = num;
 
@@ -181,12 +178,12 @@ public class TileManager {
                     Integer[] spikesArray = new Integer[]{10, 11, 14, 17, 20, 21, 22, 23};
                     List<Integer> spikes = Arrays.asList(spikesArray);
                     if (spikes.contains(num)) {
-                        entity = new Spike(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
-                    } else if (num!=0 && num !=13 && num != 18 && num !=19 && num!=12 && num!=15 &&num!=16 && num!=2 && num != 3 && num!=4) { //les briques (sans le fond ni le sol)
-                        entity = new Brick(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                        entity = new Spike(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                    } else if (num != 0 && num != 13 && num != 18 && num != 19 && num != 12 && num != 15 && num != 16 && num != 2 && num != 3 && num != 4) { //les briques (sans le fond ni le sol)
+                        entity = new Brick(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
-                    if(num==2 || num==3 || num==4 || num==12 || num==15 || num==16) { //le sol
-                        entity = new Sol(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                    if (num == 2 || num == 3 || num == 4 || num == 12 || num == 15 || num == 16) { //le sol
+                        entity = new Sol(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
 
                     unlivingEntities.add(entity);

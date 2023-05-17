@@ -7,28 +7,27 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
-public class Coeur extends UnlivingEntity{
-
-    private boolean picked;
+public class Coeur extends UnlivingEntity {
 
     GamePanel m_gp;
+    private boolean picked;
 
-    public Coeur(GamePanel a_gp, int x, int y){
-        super(x,y,20,20);
-        picked=false;
+    public Coeur(GamePanel a_gp, int x, int y) {
+        super(x, y, 20, 20, true);
+        picked = false;
         this.getCoeurImage();
         this.m_gp = a_gp;
         m_speed = 0;
     }
 
-    public void quoicouPicked(){
+    public void quoicouPicked() {
         //gérer quand le joueur touche la clé (et la ramasse du coupent)
-        picked=true;
+        picked = true;
     }
 
-    public void update(){}
+    public void update() {
+    }
 
     public void getCoeurImage() {
         //gestion des exceptions

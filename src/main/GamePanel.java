@@ -1,26 +1,17 @@
 package main;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
-
-
 import entity.*;
-import entity.UnlivingEntity;
 import lib.Vector2;
+import musica.MusicPlayer;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
-import musica.MusicPlayer;
-
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
@@ -32,41 +23,33 @@ public class GamePanel extends JPanel implements Runnable {
 
     public final int MAX_SCREEN_COL = 20;
     public final int MAX_SCREE_ROW = 20;                        // ces valeurs donnent une résolution 4:3
+    public final int GRAVITY = 7;
     //Paramètres de l'écran
     final int ORIGINAL_TILE_SIZE = 20;                            // une tuile de taille 16x16
     final int SCALE = 2;                                        // échelle utilisée pour agrandir l'affichage
     public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;    // 40*40
     public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 800
     public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREE_ROW;    // 800
-
-    public final int GRAVITY = 7;
-    public final int TERMINAL_VELOCITY = 300;
     public Image HEART_ICON;
     public Image HEART_EMPTY_ICON;
-    private Image gameOverBackground;
-
     // FPS : taux de rafraichissement
     int m_FPS;
-
     // Création des différentes instances (Player, KeyHandler, TileManager, GameThread ...)
     KeyHandler m_keyH;
     Thread m_gameThread;
     Player m_player;
     int m_panel;
     TileManager[] m_tileM;
-
     HashSet<UnlivingEntity> unlivingEntities;
-
     HashSet<UnlivingEntity> unlivingEntities2;
     HashSet<UnlivingEntity> unlivingEntities3;
     HashSet<UnlivingEntity> unlivingEntities4;
     HashSet<UnlivingEntity> unlivingEntities5;
-
     HashSet<UnlivingEntity> unlivingEntities6;
     HashSet<UnlivingEntity> unlivingEntities7;
-
     ArrayList<HashSet<UnlivingEntity>> m_unlivingEntitiesList = new ArrayList<>(7);
     HashSet<UnlivingEntity> currentUnlivingEntities;
+    private Image gameOverBackground;
 
     /**
      * Constructeur
@@ -77,15 +60,15 @@ public class GamePanel extends JPanel implements Runnable {
         m_player = new Player(this, m_keyH, TILE_SIZE, TILE_SIZE);
         //m_player = new Player(this, m_keyH, 16, 32);
         m_tileM = new TileManager[7];
-        m_panel=0;
+        m_panel = 0;
 
-        m_tileM[0] = new TileManager(this,"/maps/map1_part1.txt");
-        m_tileM[1] = new TileManager(this,"/maps/map1_part2.txt");
-        m_tileM[2] = new TileManager(this,"/maps/map1_part3.txt");
-        m_tileM[3] = new TileManager(this,"/maps/map1_part4.txt");
-        m_tileM[4] = new TileManager(this,"/maps/map1_part5.txt");
-        m_tileM[5] = new TileManager(this,"/maps/map1_part6.txt");
-        m_tileM[6] = new TileManager(this,"/maps/map1_part7.txt");
+        m_tileM[0] = new TileManager(this, "/maps/map1_part1.txt");
+        m_tileM[1] = new TileManager(this, "/maps/map1_part2.txt");
+        m_tileM[2] = new TileManager(this, "/maps/map1_part3.txt");
+        m_tileM[3] = new TileManager(this, "/maps/map1_part4.txt");
+        m_tileM[4] = new TileManager(this, "/maps/map1_part5.txt");
+        m_tileM[5] = new TileManager(this, "/maps/map1_part6.txt");
+        m_tileM[6] = new TileManager(this, "/maps/map1_part7.txt");
 
 
         Cleent cle = new Cleent(this, 170, 550);
@@ -103,13 +86,13 @@ public class GamePanel extends JPanel implements Runnable {
         unlivingEntities6 = m_tileM[5].getUnlivingEntities();
         unlivingEntities7 = m_tileM[6].getUnlivingEntities();
 
-        m_unlivingEntitiesList.add(0,unlivingEntities);
-        m_unlivingEntitiesList.add(1,unlivingEntities2);
-        m_unlivingEntitiesList.add(2,unlivingEntities3);
-        m_unlivingEntitiesList.add(3,unlivingEntities4);
-        m_unlivingEntitiesList.add(4,unlivingEntities5);
-        m_unlivingEntitiesList.add(5,unlivingEntities6);
-        m_unlivingEntitiesList.add(6,unlivingEntities7);
+        m_unlivingEntitiesList.add(0, unlivingEntities);
+        m_unlivingEntitiesList.add(1, unlivingEntities2);
+        m_unlivingEntitiesList.add(2, unlivingEntities3);
+        m_unlivingEntitiesList.add(3, unlivingEntities4);
+        m_unlivingEntitiesList.add(4, unlivingEntities5);
+        m_unlivingEntitiesList.add(5, unlivingEntities6);
+        m_unlivingEntitiesList.add(6, unlivingEntities7);
 
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.black);
@@ -129,13 +112,13 @@ public class GamePanel extends JPanel implements Runnable {
         m_gameThread.start();
     }
 
-public void setCurrentUnlivingEntities(int i){
-        currentUnlivingEntities=m_unlivingEntitiesList.get(i);
-}
+    public void setCurrentUnlivingEntities(int i) {
+        currentUnlivingEntities = m_unlivingEntitiesList.get(i);
+    }
 
     public void run() {
 
-        double drawInterval = 1000000000 / m_FPS; // rafraichissement chaque 0.0166666 secondes
+        double drawInterval = 1_000_000_000.0 / m_FPS; // rafraichissement chaque 0.0166666 secondes
         double nextDrawTime = System.nanoTime() + drawInterval;
         MusicPlayer zik = new MusicPlayer(String.valueOf(new File("res/zik/zikrandom.wav")));
         Thread OST = new Thread(zik);
@@ -174,53 +157,42 @@ public void setCurrentUnlivingEntities(int i){
      */
     public void update() {
         setCurrentUnlivingEntities(m_panel);
-        boolean collision = false;
         boolean pickable = false; //TODO : mettre les pickables
-//        System.out.println("unlivingEntities = " + unlivingEntities);
         m_player.update(pickable);
 
-        if(m_player.futurePosition().getX()>=780 && m_player.getTile()==0){
+        if (m_player.futurePosition().getX() >= 780 && m_player.getTile() == 0) {
             m_player.nextTile();
             this.nextPanel();
             m_player.position.setX(50);
-        }
-        else if(m_player.futurePosition().getX()>=780 && m_player.getTile()==1) {
+        } else if (m_player.futurePosition().getX() >= 780 && m_player.getTile() == 1) {
             m_player.nextTile();
             this.nextPanel();
             m_player.position.setX(50);
-        }
-
-        else if(m_player.futurePosition().getY()>=780 && m_player.getTile()==2) { //ne marchera pas car fall n'utilise pas futureposition (mais je l'ai pas sur ma version)
+        } else if (m_player.futurePosition().getY() >= 780 && m_player.getTile() == 2) { //ne marchera pas car fall n'utilise pas futureposition (mais je l'ai pas sur ma version)
             m_player.nextTile();
             this.nextPanel();
             m_player.position.setY(50);
-        }
-
-        else if(m_player.futurePosition().getX()<=20 && m_player.getTile()==3) {
+        } else if (m_player.futurePosition().getX() <= 20 && m_player.getTile() == 3) {
             m_player.nextTile();
             this.nextPanel();
             m_player.position.setX(750);
-        }
-
-        else if(m_player.futurePosition().getX()<=20 && m_player.getTile()==4) {
+        } else if (m_player.futurePosition().getX() <= 20 && m_player.getTile() == 4) {
             m_player.nextTile();
             this.nextPanel();
             m_player.position.setX(750);
-        }
-
-        else if(m_player.futurePosition().getX()<=20 && m_player.getTile()==5) {
+        } else if (m_player.futurePosition().getX() <= 20 && m_player.getTile() == 5) {
             m_player.nextTile();
             this.nextPanel();
             m_player.position.setX(750);
         }
 
 
-        if(m_keyH.takes_damage) {
+        if (m_keyH.takes_damage) {
             m_player.takingDamage(1);
             m_keyH.takes_damage = false;
         }
 
-        if(m_player.m_vie <= 0) {
+        if (m_player.m_vie <= 0) {
             gameOver();
         }
     }
@@ -242,13 +214,12 @@ public void setCurrentUnlivingEntities(int i){
             Vector2 pos = m_player.futurePosition();
             if (unlivingEntity instanceof Sol && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
                     pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
-                    pos.getX() + m_player.width > unlivingEntity.position.getX() ) {
+                    pos.getX() + m_player.width > unlivingEntity.position.getX()) {
                 return true;
-            }
-            else if (unlivingEntity instanceof Spike && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+            } else if (unlivingEntity instanceof Spike && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
                     pos.getX() + m_player.width > unlivingEntity.position.getX() &&
                     pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
-                    m_player.height + pos.getY()  > unlivingEntity.position.getY()) {
+                    m_player.height + pos.getY() > unlivingEntity.position.getY()) {
                 m_player.takingDamage(1);
             }
         }
@@ -258,32 +229,11 @@ public void setCurrentUnlivingEntities(int i){
     public boolean collideMP() {
         for (UnlivingEntity unlivingEntity :
                 unlivingEntities) {
-            Vector2 pos=m_player.futurePosition();
+            Vector2 pos = m_player.futurePosition();
             if (unlivingEntity instanceof Brick && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
                     pos.getX() + m_player.width > unlivingEntity.position.getX() &&
                     pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height && //mettre -1 en Y et verif
-                    pos.getY() + m_player.height  < unlivingEntity.position.getY()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean collide() {
-        for (UnlivingEntity unlivingEntity :
-                unlivingEntities) {
-            Vector2 pos=m_player.futurePosition();
-            if (pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
-                    pos.getX() + m_player.width > unlivingEntity.position.getX() &&
-                    pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
-                    m_player.height + pos.getY()  > unlivingEntity.position.getY()) {
-
-                if(unlivingEntity instanceof Spike) {
-                    m_player.takingDamage(1);
-                }
-//                System.out.println(m_player.futurePosition());
-//                System.out.println(unlivingEntity.position);
-//                System.out.println("----");
+                    pos.getY() + m_player.height < unlivingEntity.position.getY()) {
                 return true;
             }
         }
@@ -296,7 +246,7 @@ public void setCurrentUnlivingEntities(int i){
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        if(m_gameThread != null) {
+        if (m_gameThread != null) {
             m_tileM[m_panel].draw(g2);
             m_player.draw(g2);
             for (UnlivingEntity entity : currentUnlivingEntities) {
@@ -306,30 +256,17 @@ public void setCurrentUnlivingEntities(int i){
         g2.drawImage(gameOverBackground, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
         g2.dispose();
     }
+
     public void nextPanel() {
         m_panel++;
     }
+
     public void drawEntity(Graphics2D a_g2, UnlivingEntity entity) {
         // récupère l'image du joueur
         BufferedImage l_image = entity.m_idleImage;
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
         a_g2.drawImage(l_image, entity.position.getX(), entity.position.getY(), this.TILE_SIZE, this.TILE_SIZE, null);
     }
-
-
-    public void playMusic(String filePath) {
-        try {
-            File audioFile = new File(filePath);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }
 
