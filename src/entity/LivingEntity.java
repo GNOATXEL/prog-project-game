@@ -8,6 +8,12 @@ import java.awt.image.BufferedImage;
 
 public abstract class LivingEntity extends Entity{
     public int m_vie;
+
+    BufferedImage m_idleImage2;
+
+    BufferedImage l_image;
+
+
     GamePanel m_gp;
     int compteur;
 
@@ -30,12 +36,14 @@ public abstract class LivingEntity extends Entity{
         if (!collision) position = futurePosition();
     }
 
+    public BufferedImage getL_image(){
+        return l_image;
+    }
+
+
     public abstract Vector2 futurePosition();
 
-    public void draw(Graphics2D a_g2) {
-        // récupère l'image de l'entité
-        BufferedImage l_image = m_idleImage;
-        // affiche l'entité avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
-        a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+    public abstract void draw(Graphics2D a_g2);{
+
     }
 }

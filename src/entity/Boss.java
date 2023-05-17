@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class Boss extends Enemy{
     public Boss(GamePanel a_gp, int larg, int haut, int x, int y) {
-        super(a_gp, larg, haut, x, y);
+        super(a_gp, larg, haut, x, y, 5);
         m_vie = 5;
     }
 
@@ -45,6 +45,8 @@ public class Boss extends Enemy{
             a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
         }
     }
+
+
 
     public void getImage() {
         //gestion des exceptions

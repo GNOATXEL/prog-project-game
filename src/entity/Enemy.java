@@ -12,18 +12,37 @@ import java.util.Objects;
 public abstract class Enemy extends LivingEntity{
 
     public int m_compteur;
-    BufferedImage m_idleImage2;
 
-    public Enemy(GamePanel a_gp, int larg, int haut, int x, int y) {
+    public int cooldown;
+
+
+    public int m_vie;
+
+    public Enemy(GamePanel a_gp, int larg, int haut, int x, int y,int vie) {
         super(a_gp, larg, haut);
+        m_vie=vie;
+        cooldown=0;
         this.getImage();
         position=new Vector2(x,y);
     }
+    public void takeDamage(){
+        if(cooldown==0){
+            cooldown=50;
+            m_vie--;
+        }
+    }
 
+    public int getHP(){
+        return m_vie;
+    }
     public abstract Vector2 futurePosition();
 
     public void update(){
         compteur=compteur+1;
+        if (cooldown > 0) {
+            cooldown--;
+            System.out.println(cooldown);
+        }
         position=futurePosition();
     }
 

@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public final int MAX_SCREEN_COL = 20;
     public final int MAX_SCREE_ROW = 20;                        // ces valeurs donnent une résolution 4:3
-    public final int GRAVITY = 7;
+    public final int GRAVITY = 12;
     //Paramètres de l'écran
     final int ORIGINAL_TILE_SIZE = 20;                            // une tuile de taille 16x16
     final int SCALE = 2;                                        // échelle utilisée pour agrandir l'affichage
@@ -62,7 +62,6 @@ public class GamePanel extends JPanel implements Runnable {
     HashSet<Enemy> livingEntities7;
     ArrayList<HashSet<Enemy>> m_livingEntitiesList = new ArrayList<>(7);
     HashSet<Enemy> currentLivingEntities;
-
     private Image gameOverBackground;
 
     /**
@@ -88,6 +87,8 @@ public class GamePanel extends JPanel implements Runnable {
         Cleent cle = new Cleent(this, 170, 550);
         m_tileM[1].addUnlivingEntities(cle);
 
+
+
         Garde garde = new Garde(this, 20*SCALE, 20*SCALE, 500, 160);
         m_tileM[1].addLivingEntities(garde);
 
@@ -100,7 +101,7 @@ public class GamePanel extends JPanel implements Runnable {
         Coeur coeur = new Coeur(this, 60, 300);
         m_tileM[3].addUnlivingEntities(coeur);
 
-        Boss boss = new Boss(this, 40*SCALE, 40*SCALE, 280, 600);
+        Boss boss = new Boss(this, 20*SCALE, 20*SCALE, 280, 600);
         m_tileM[6].addLivingEntities(boss);
 
 
@@ -173,6 +174,9 @@ public class GamePanel extends JPanel implements Runnable {
         Thread OST = new Thread(zik);
         OST.start();
 
+
+
+
         while (m_gameThread != null) { //Tant que le thread du jeu est actif
 
             //Permet de mettre à jour les différentes variables du jeu
@@ -208,6 +212,14 @@ public class GamePanel extends JPanel implements Runnable {
         setCurrentLivingEntities(m_panel);
         for (Enemy entity : currentLivingEntities) {
             entity.update();
+            if(entity.getHP()==0 && !(entity instanceof Boss)){
+                currentLivingEntities.remove(entity);
+            };
+            if(entity.getHP()==0 && entity instanceof Boss){
+                currentLivingEntities.remove(entity);
+                win();
+            };
+
         }
         boolean pickable = false; //TODO : mettre les pickables
 //      System.out.println("unlivingEntities = " + unlivingEntities);
@@ -218,15 +230,25 @@ public class GamePanel extends JPanel implements Runnable {
         if (m_player.futurePosition().getX() >= 780 && m_player.getTile() == 0) {
             m_player.nextTile();
             this.nextPanel();
-            m_player.position.setX(50);
+            m_player.position.setX(25);
         } else if (m_player.futurePosition().getX() >= 780 && m_player.getTile() == 1) {
             m_player.nextTile();
             this.nextPanel();
-            m_player.position.setX(50);
-        } else if (m_player.futurePosition().getY() >= 780 && m_player.getTile() == 2) { //ne marchera pas car fall n'utilise pas futureposition (mais je l'ai pas sur ma version)
+            m_player.position.setX(25);
+        } else if (m_player.futurePosition().getX() <= 20 && m_player.getTile() == 1) {
+            m_player.previousTile();
+            this.previousPanel();
+            m_player.position.setX(750);
+
+            }else if (m_player.futurePosition().getY() >= 780 && m_player.getTile() == 2) {
             m_player.nextTile();
             this.nextPanel();
-            m_player.position.setY(50);
+            m_player.position.setY(25);
+        } else if (m_player.futurePosition().getX() <= 20 && m_player.getTile() == 2) {
+            m_player.previousTile();
+            this.previousPanel();
+            m_player.position.setX(750);
+
         } else if (m_player.futurePosition().getX() <= 20 && m_player.getTile() == 3) {
             m_player.nextTile();
             this.nextPanel();
@@ -235,14 +257,23 @@ public class GamePanel extends JPanel implements Runnable {
             m_player.nextTile();
             this.nextPanel();
             m_player.position.setX(750);
+        } else if (m_player.futurePosition().getX() >= 780 && m_player.getTile() == 4) {
+            m_player.previousTile();
+            this.previousPanel();
+            m_player.position.setX(25);
         } else if (m_player.futurePosition().getX() <= 20 && m_player.getTile() == 5) {
             m_player.nextTile();
             this.nextPanel();
-            m_player.position.setX(750);
+            m_player.position.setX(700);
+        } else if (m_player.futurePosition().getX() >= 780 && m_player.getTile() == 5) {
+            m_player.previousTile();
+            this.previousPanel();
+            m_player.position.setX(50);
         }
 
         if (m_keyH.takes_damage) {
             m_player.takingDamage(1);
+
             m_keyH.takes_damage = false;
         }
 
@@ -282,34 +313,78 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    private void win() {
+        m_gameThread.interrupt();
+        m_gameThread = null;
+
+        try {
+            gameOverBackground = ImageIO.read(Objects.requireNonNull(getClass().getResource("/win.png")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean collideSol() {
         for (UnlivingEntity unlivingEntity :
                 currentUnlivingEntities) {
-            Vector2 pos = m_player.futurePosition();
-            if (((unlivingEntity instanceof Sol || (unlivingEntity instanceof Grille && !(m_player.statusCleent()))) && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
-                    pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
-                    pos.getX() + m_player.width > unlivingEntity.position.getX())) {
+            Vector2 pos = m_player.position;
+            if (((unlivingEntity instanceof Sol || (unlivingEntity instanceof Grille && !(m_player.statusCleent())) || unlivingEntity instanceof PLATEFORME) && (pos.getY() + unlivingEntity.height > unlivingEntity.position.getY())
+                    && (pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height) &&
+                    (pos.getX() - 1 < unlivingEntity.position.getX() + unlivingEntity.width) &&
+                    (pos.getX() + 1 + m_player.width > unlivingEntity.position.getX()))) {
                 return true;
-            } else if (unlivingEntity instanceof Spike && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
-                    pos.getX() + m_player.width > unlivingEntity.position.getX() &&
-                    pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
-                    m_player.height + pos.getY() > unlivingEntity.position.getY()) {
+
+            } else if (unlivingEntity instanceof Spike && pos.getX() + 6 < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + 2 + m_player.width > unlivingEntity.position.getX() &&
+                    pos.getY() - 2 < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
+                    m_player.height + pos.getY() - 5 > unlivingEntity.position.getY()) {
                 m_player.takingDamage(1);
             }
         }
+        for (LivingEntity livingEntity :
+                currentLivingEntities) {
+            Vector2 pos = m_player.position;
+            if (((livingEntity instanceof Garde || (livingEntity instanceof Boss)) && (pos.getY() + livingEntity.height > livingEntity.position.getY())
+                    && (pos.getY() < livingEntity.position.getY() + livingEntity.height) &&
+                    (pos.getX() - 1 < livingEntity.position.getX() + livingEntity.width) &&
+                    (pos.getX() + 1 + m_player.width > livingEntity.position.getX()))) {
+                ((Enemy) livingEntity).takeDamage();
+                return true;
+
+
+            }
+
+            }
         return false;
-    }
+        }
+
 
     public boolean collideMP() {
         for (UnlivingEntity unlivingEntity :
                 currentUnlivingEntities) {
             Vector2 pos = m_player.futurePosition();
-            if (unlivingEntity instanceof Brick && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
-                    pos.getX() + m_player.width > unlivingEntity.position.getX() &&
-                    pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height && //mettre -1 en Y et verif
-                    pos.getY() + m_player.height < unlivingEntity.position.getY()) {
+            if ((unlivingEntity instanceof Brick || unlivingEntity instanceof PLATEFORME || unlivingEntity instanceof Sol) && pos.getX() - 1 < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + 1 + m_player.width > unlivingEntity.position.getX() &&
+                    pos.getY() - 1 < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
+                    pos.getY() - 1 + m_player.height > unlivingEntity.position.getY()) {
+                return true;
+            } else if (unlivingEntity instanceof Spike && pos.getX() + 2 < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + 2 + m_player.width > unlivingEntity.position.getX() &&
+                    pos.getY() + 2 < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
+                    m_player.height + pos.getY() - 5 > unlivingEntity.position.getY()) {
+                m_player.takingDamage(1);
+            }
+        }
+        for (LivingEntity livingEntity : currentLivingEntities) {
+            Vector2 pos = m_player.futurePosition();
+            if (((livingEntity instanceof Garde || (livingEntity instanceof Boss)) && (pos.getY() + livingEntity.height-2 > livingEntity.position.getY())
+                    && (pos.getY() < livingEntity.position.getY() + livingEntity.height) &&
+                    (pos.getX() - 1 < livingEntity.position.getX() + livingEntity.width) &&
+                    (pos.getX() + 1 + m_player.width > livingEntity.position.getX()))) {
+                m_player.takingDamage(1);
                 return true;
             }
+
         }
         return false;
     }
@@ -324,10 +399,10 @@ public class GamePanel extends JPanel implements Runnable {
             m_tileM[m_panel].draw(g2);
             m_player.draw(g2);
             for (UnlivingEntity entity : currentUnlivingEntities) {
-                drawEntity(g2, entity);
+                drawUnlivingEntity(g2, entity);
             }
             for (LivingEntity entity : currentLivingEntities) {
-                drawEntity(g2, entity);
+                drawLivingEntity(g2, entity);
             }
         }
         g2.drawImage(gameOverBackground, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
@@ -338,10 +413,21 @@ public class GamePanel extends JPanel implements Runnable {
         m_panel++;
     }
 
-    public void drawEntity(Graphics2D a_g2, Entity entity) {
-        // récupère l'image du joueur
+    public void previousPanel() {
+        m_panel--;
+    }
+
+    public void drawUnlivingEntity(Graphics2D a_g2, UnlivingEntity entity) {
+        // récupère l'image de l'entité
         BufferedImage l_image = entity.m_idleImage;
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
         a_g2.drawImage(l_image, entity.position.getX(), entity.position.getY(), this.TILE_SIZE, this.TILE_SIZE, null);
+    }
+
+    public void drawLivingEntity(Graphics2D a_g2, LivingEntity entity) {
+        // récupère l'image de l'entité
+        BufferedImage l_image = entity.getL_image();
+        // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
+        entity.draw(a_g2);
     }
 }
