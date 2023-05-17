@@ -1,6 +1,8 @@
 package main;
 
+import entity.Brick;
 import entity.Player;
+import entity.Sol;
 import entity.Spike;
 import entity.UnlivingEntity;
 import lib.Vector2;
@@ -132,24 +134,38 @@ public class GamePanel extends JPanel implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        m_player.update(pickable);
     }
 
-    public boolean collide() {
+    public boolean collideSol() {
+        for (UnlivingEntity unlivingEntity :
+                unlivingEntities) {
+            Vector2 pos = m_player.futurePosition();
+            if (unlivingEntity instanceof Sol && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
+                    pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + m_player.width > unlivingEntity.position.getX() ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean collideMP() {
         for (UnlivingEntity unlivingEntity :
                 unlivingEntities) {
             Vector2 pos=m_player.futurePosition();
-            if (pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+            if (unlivingEntity instanceof Brick && pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
                     pos.getX() + m_player.width > unlivingEntity.position.getX() &&
-                    pos.getY() < unlivingEntity.position.getY() + unlivingEntity.height && //mettre -1 en Y et verif
-                    m_player.height + pos.getY()  > unlivingEntity.position.getY()) {
+                    pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height && //mettre -1 en Y et verif
+                     pos.getY() + m_player.height  < unlivingEntity.position.getY()) {
 
-                if(unlivingEntity instanceof Spike) {
-                    m_player.takingDamage(1);
-                }
 //                System.out.println(m_player.futurePosition());
 //                System.out.println(unlivingEntity.position);
 //                System.out.println("----");
                 return true;
+            }
+            if(unlivingEntity instanceof Spike) {
+                m_player.takingDamage(1);
             }
         }
         return false;
