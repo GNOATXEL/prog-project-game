@@ -42,8 +42,8 @@ public class TileManager {
         return unlivingEntities;
     }
 
-    public void addUnlivingEntities(Cleent cle) {
-        unlivingEntities.add(cle);
+    public void addUnlivingEntities(UnlivingEntity machin) {
+        unlivingEntities.add(machin);
     }
 
     /**

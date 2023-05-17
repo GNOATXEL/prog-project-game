@@ -8,4 +8,5 @@ public class UnlivingEntity extends Entity {
         width = taille;
         height = hauteur;
     }
+
 }
