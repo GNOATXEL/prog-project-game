@@ -13,15 +13,12 @@ import java.util.Objects;
 
 public class Player extends LivingEntity {
     public static int VIE_MAX = 3;
+    private final Vector2[] positionsDepart;
     public int m_vie;
     KeyHandler m_keyH;
     int compteurSaut;
-    int acc;
-    int y;
     long lastDamageTaken;
-
     int tile = 0;
-    private final Vector2[] positionsDepart;
 
     /**
      * Constructeur de Player
@@ -46,12 +43,9 @@ public class Player extends LivingEntity {
      * Initialisation des données membres avec des valeurs par défaut
      */
     protected void setDefaultValues() {
-        // TODO: à modifier sûrement
-        position = new Vector2(50, 525);
+        position = positionsDepart[0];
         m_speed = 4;
         compteurSaut = 0;
-        acc = m_gp.GRAVITY;
-        y = 0;
         lastDamageTaken = new Date().getTime();
     }
 
@@ -59,7 +53,7 @@ public class Player extends LivingEntity {
      * Récupération de l'image du personnage
      */
     public void getImage() {
-        //gestion des exceptions
+        // gestion des exceptions
         try {
             m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/superhero.png")));
         } catch (IOException e) {
@@ -71,7 +65,7 @@ public class Player extends LivingEntity {
      * Mise à jour des données du joueur
      */
     public void update(boolean pickable) {
-        if (!m_gp.collideSol()) { //on est pas sur le sol
+        if (!m_gp.collideSol()) { //on n'est pas sur le sol
             if (m_keyH.is_jumping && compteurSaut < 20) { //mais on saute donc normal
                 if (!m_gp.collideMP()) position = futurePosition();
                 compteurSaut++;
@@ -80,7 +74,7 @@ public class Player extends LivingEntity {
                 compteurSaut++;
                 fall();
             }
-        } else { //sur le sol empeche jump dans murs
+        } else { //sur le sol empêche de jump dans les murs
             if (!m_gp.collideMP()) { //et pas dans un obstacle
                 position = futurePosition();
                 compteurSaut = 0;
@@ -89,8 +83,6 @@ public class Player extends LivingEntity {
                 if (!m_keyH.is_jumping) compteurSaut = 0;
             }
         }
-
-        System.out.println(futurePosition());
     }
 
     public void fall() {
@@ -105,9 +97,6 @@ public class Player extends LivingEntity {
 
     public boolean takingDamage(int dmg) {
         long currentTime = new Date().getTime();
-
-        /*position.setX(50);
-        position.setY(525);*/
 
         position = positionsDepart[getTile()];
 
@@ -143,6 +132,7 @@ public class Player extends LivingEntity {
     public void draw(Graphics2D a_g2) {
         // récupère l'image du joueur
         BufferedImage l_image = m_idleImage;
+
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
         a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
 
