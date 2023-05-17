@@ -37,7 +37,7 @@ public class Coeur extends UnlivingEntity {
     public void getCoeurImage() {
         // gestion des exceptions
         try {
-            m_idleImage = ImageIO.read(new File("res/tiles/COEURPLEIN.png"));
+            m_idleImage = ImageIO.read(new File("res/pasvivant/COEURPLEIN.png"));
         } catch (IOException e) {
             System.out.println("Image non trouvée");
         }
