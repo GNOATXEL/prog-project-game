@@ -153,6 +153,9 @@ public class TileManager {
             m_tile[28] = new Tile();
             m_tile[28].m_image = ImageIO.read(getClass().getResource("/tiles/GRILLE.png"));
 
+            m_tile[29] = new Tile();
+            m_tile[29].m_image = ImageIO.read(getClass().getResource("/tiles/GRILLE.png"));
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -184,16 +187,20 @@ public class TileManager {
 
                     Integer[] spikesArray = new Integer[]{10, 11, 14, 17, 20, 21, 22, 23};
                     List<Integer> spikes = Arrays.asList(spikesArray);
-                    if (spikes.contains(num)) {
+                    if (num==14 || num==10 || num==11 || num==17 || num==23 || num==22 ||num==20 || num==21) {
                         entity = new Spike(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
-                    } else if (num != 0 && num != 13 && num != 18 && num != 19 && num != 12 && num != 15 && num != 16 && num != 2 && num != 3 && num != 4) { //les briques (sans le fond ni le sol)
+                    } else if (num == 6 || num == 7 || num == 8 || num == 9 || num == 5 || num == 4 || num == 3 || num == 29) { //les briques (sans le fond ni le sol)
                         entity = new Brick(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
-                    if (num == 2 || num == 3 || num == 4 || num == 12 || num == 15 || num == 16 ) { //le sol
+                    if (num == 2 || num == 3 || num == 4 ) { //le sol
                         entity = new Sol(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
 
-                    if (num == 28) { //le sol
+                    if (num == 12 || num == 15 || num == 16) { //le sol
+                        entity = new PLATEFORME(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                    }
+
+                    if (num == 28) { //la grille
                         entity = new Grille(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
 
@@ -201,7 +208,7 @@ public class TileManager {
 
                     col++;
                 }
-                if (col == m_gp.MAX_SCREEN_COL) {
+                if(col == m_gp.MAX_SCREEN_COL) {
                     col = 0;
                     row++;
                 }

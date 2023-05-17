@@ -10,15 +10,16 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Garde extends Enemy{
+
     public Vector2 futurePosition() {
         Vector2 direction=new Vector2(0,0);
-        if (compteur<32) {
+        if (compteur<50) {
             direction.setX(1);
         }
         else {
             direction.setX(-1);
         }
-        if (compteur>64){
+        if (compteur>100){
             compteur=0;
         }
         System.out.println(direction);
@@ -26,14 +27,15 @@ public class Garde extends Enemy{
         return new Vector2(direction.addVector(position));
     }
     public Garde(GamePanel a_gp, int larg, int haut, int x, int y) {
-        super(a_gp, larg, haut, x, y);
+        super(a_gp, larg, haut, x, y,1);
         this.getImage();
         position=new Vector2(x,y);
         m_compteur=0;
     }
 
+
     public void draw(Graphics2D a_g2) {
-        if (compteur<32) {
+        if (compteur<50) {
             // récupère l'image de l'entité
             BufferedImage l_image = m_idleImage;
             // affiche l'entité avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)

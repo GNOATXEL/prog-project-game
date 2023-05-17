@@ -20,6 +20,8 @@ public class Player extends LivingEntity {
 
     public BufferedImage m_idleImage2;
 
+    BufferedImage l_image;
+
     boolean hasCleent=false;
 
     int tile = 0;
@@ -38,6 +40,10 @@ public class Player extends LivingEntity {
         this.m_keyH = a_keyH;
         this.setDefaultValues();
 
+        l_image = m_idleImage;
+
+        compteur=0;
+
         width = larg;
         height = haut;
         m_vie = VIE_MAX;
@@ -50,7 +56,7 @@ public class Player extends LivingEntity {
         positionsDepart = new Vector2[]{new Vector2(50, 525), new Vector2(50, 50), new Vector2(30, 150),
                 new Vector2(650, 50), new Vector2(720, 520), new Vector2(720, 50), new Vector2(720, 520)};
         position = positionsDepart[0];
-        m_speed = 4;
+        m_speed = 6;
         compteurSaut = 0;
         lastDamageTaken = new Date().getTime();
     }
@@ -62,7 +68,7 @@ public class Player extends LivingEntity {
         // gestion des exceptions
         try {
             m_idleImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/joueur1.png")));
-            m_idleImage2 = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/joueur2.png")));
+            m_idleImage2 = ImageIO.read(Objects.requireNonNull(getClass().getResource("/player/joueur1reverse.png")));
         } catch (IOException e) {
             System.out.println("Image du héros non trouvée.");
         }
@@ -125,6 +131,9 @@ public class Player extends LivingEntity {
     public void nextTile() {
         tile++;
     }
+    public void previousTile() {
+        tile--;
+    }
 
     public int getTile() {
         return tile;
@@ -149,7 +158,11 @@ public class Player extends LivingEntity {
      */
     public void draw(Graphics2D a_g2) {
         // récupère l'image du joueur
-        BufferedImage l_image = m_idleImage;
+        if(this.futurePosition().getX()<this.position.getX()){
+            l_image = m_idleImage2;
+        } else if(this.futurePosition().getX()>this.position.getX()){
+            l_image = m_idleImage;
+        }
 
         // affiche le personnage avec l'image "image", avec les coordonnées x et y, et de taille tileSize (16x16) sans échelle, et 48x48 avec échelle)
         a_g2.drawImage(l_image, position.getX(), position.getY(), m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
