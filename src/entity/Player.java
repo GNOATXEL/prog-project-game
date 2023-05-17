@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Player extends LivingEntity {
+    public static int VIE_MAX = 3;
     public int m_vie;
     KeyHandler m_keyH;
     int compteurSaut;
@@ -20,6 +21,7 @@ public class Player extends LivingEntity {
     long lastDamageTaken;
 
     int tile = 0;
+    private final Vector2[] positionsDepart;
 
     /**
      * Constructeur de Player
@@ -35,7 +37,9 @@ public class Player extends LivingEntity {
 
         width = larg;
         height = haut;
-        m_vie = 3;
+        m_vie = VIE_MAX;
+        positionsDepart = new Vector2[]{new Vector2(50, 525), new Vector2(50, 50), new Vector2(30, 150),
+                new Vector2(650, 50), new Vector2(720, 520), new Vector2(720, 50), new Vector2(720, 520)};
     }
 
     /**
@@ -85,32 +89,6 @@ public class Player extends LivingEntity {
                 if (!m_keyH.is_jumping) compteurSaut = 0;
             }
         }
-       /*
-        if (!m_gp.collide()) {
-            if (m_keyH.is_jumping && compteurSaut < 20) {
-                isFalling=false;
-                position = futurePosition();
-                compteurSaut++;
-                acc=0;
-                vertical_speed=0;
-            } else {
-                isFalling=true;
-                position=futurePosition();
-                fall();
-            }*/
-        /*}else {
-            isFalling=false;
-            if (pickable) {
-                position = futurePosition();
-                vertical_speed = 0;
-                acc = 0;
-            }
-            if (!m_keyH.is_jumping) {
-                compteurSaut = 0;
-                vertical_speed = 0;
-                acc = 0;
-            }
-        }*/
 
         System.out.println(futurePosition());
     }
@@ -128,8 +106,10 @@ public class Player extends LivingEntity {
     public boolean takingDamage(int dmg) {
         long currentTime = new Date().getTime();
 
-        position.setX(50);
-        position.setY(525);
+        /*position.setX(50);
+        position.setY(525);*/
+
+        position = positionsDepart[getTile()];
 
         if (lastDamageTaken + 1000 < currentTime) {
             lastDamageTaken = currentTime;
@@ -170,8 +150,8 @@ public class Player extends LivingEntity {
         for (int i = 0; i < m_vie; i++) {
             a_g2.drawImage(m_gp.HEART_ICON, m_gp.TILE_SIZE * (i + 1), m_gp.TILE_SIZE, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
         }
-        for (int i = 0; i < (3 - m_vie); i++) {
-            a_g2.drawImage(m_gp.HEART_EMPTY_ICON, m_gp.TILE_SIZE * (3 - i), m_gp.TILE_SIZE, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
+        for (int i = 0; i < (VIE_MAX - m_vie); i++) {
+            a_g2.drawImage(m_gp.HEART_EMPTY_ICON, m_gp.TILE_SIZE * (VIE_MAX - i), m_gp.TILE_SIZE, m_gp.TILE_SIZE, m_gp.TILE_SIZE, null);
         }
 
     }
