@@ -9,11 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 
-import entity.Cleent;
-import entity.Brick;
-import entity.Player;
-import entity.Sol;
-import entity.Spike;
+import entity.*;
 import entity.UnlivingEntity;
 import lib.Vector2;
 import tile.TileManager;
@@ -25,6 +21,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -59,11 +56,17 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager[] m_tileM;
 
     HashSet<UnlivingEntity> unlivingEntities;
-    HashSet<UnlivingEntity> unlivingEntities6;
+
     HashSet<UnlivingEntity> unlivingEntities2;
     HashSet<UnlivingEntity> unlivingEntities3;
     HashSet<UnlivingEntity> unlivingEntities4;
     HashSet<UnlivingEntity> unlivingEntities5;
+
+    HashSet<UnlivingEntity> unlivingEntities6;
+    HashSet<UnlivingEntity> unlivingEntities7;
+
+    ArrayList<HashSet<UnlivingEntity>> m_unlivingEntitiesList = new ArrayList<>(7);
+    HashSet<UnlivingEntity> currentUnlivingEntities;
 
     /**
      * Constructeur
@@ -73,21 +76,24 @@ public class GamePanel extends JPanel implements Runnable {
         m_keyH = new KeyHandler();
         m_player = new Player(this, m_keyH, TILE_SIZE, TILE_SIZE);
         //m_player = new Player(this, m_keyH, 16, 32);
-        m_tileM = new TileManager[6];
+        m_tileM = new TileManager[7];
         m_panel=0;
 
         m_tileM[0] = new TileManager(this,"/maps/map1_part1.txt");
-
         m_tileM[1] = new TileManager(this,"/maps/map1_part2.txt");
-
-        Cleent cle = new Cleent(this, 170, 550);
-        m_tileM[1].addUnlivingEntities(cle);
-
         m_tileM[2] = new TileManager(this,"/maps/map1_part3.txt");
         m_tileM[3] = new TileManager(this,"/maps/map1_part4.txt");
         m_tileM[4] = new TileManager(this,"/maps/map1_part5.txt");
         m_tileM[5] = new TileManager(this,"/maps/map1_part6.txt");
+        m_tileM[6] = new TileManager(this,"/maps/map1_part7.txt");
 
+
+        Cleent cle = new Cleent(this, 170, 550);
+        m_tileM[1].addUnlivingEntities(cle);
+
+
+        Coeur coeur = new Coeur(this, 60, 300);
+        m_tileM[3].addUnlivingEntities(coeur);
 
         unlivingEntities = m_tileM[0].getUnlivingEntities();
         unlivingEntities2 = m_tileM[1].getUnlivingEntities();
@@ -95,12 +101,23 @@ public class GamePanel extends JPanel implements Runnable {
         unlivingEntities4 = m_tileM[3].getUnlivingEntities();
         unlivingEntities5 = m_tileM[4].getUnlivingEntities();
         unlivingEntities6 = m_tileM[5].getUnlivingEntities();
+        unlivingEntities7 = m_tileM[6].getUnlivingEntities();
+
+        m_unlivingEntitiesList.add(0,unlivingEntities);
+        m_unlivingEntitiesList.add(1,unlivingEntities2);
+        m_unlivingEntitiesList.add(2,unlivingEntities3);
+        m_unlivingEntitiesList.add(3,unlivingEntities4);
+        m_unlivingEntitiesList.add(4,unlivingEntities5);
+        m_unlivingEntitiesList.add(5,unlivingEntities6);
+        m_unlivingEntitiesList.add(6,unlivingEntities7);
 
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(m_keyH);
         this.setFocusable(true);
+
+        setCurrentUnlivingEntities(m_panel);
     }
 
 
@@ -112,12 +129,14 @@ public class GamePanel extends JPanel implements Runnable {
         m_gameThread.start();
     }
 
+public void setCurrentUnlivingEntities(int i){
+        currentUnlivingEntities=m_unlivingEntitiesList.get(i);
+}
 
     public void run() {
 
         double drawInterval = 1000000000 / m_FPS; // rafraichissement chaque 0.0166666 secondes
         double nextDrawTime = System.nanoTime() + drawInterval;
-
         MusicPlayer zik = new MusicPlayer(String.valueOf(new File("res/zik/zikrandom.wav")));
         Thread OST = new Thread(zik);
         OST.start();
@@ -154,6 +173,7 @@ public class GamePanel extends JPanel implements Runnable {
      * Mise à jour des données des entités
      */
     public void update() {
+        setCurrentUnlivingEntities(m_panel);
         boolean collision = false;
         boolean pickable = false; //TODO : mettre les pickables
 //        System.out.println("unlivingEntities = " + unlivingEntities);
@@ -183,6 +203,12 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         else if(m_player.futurePosition().getX()<=20 && m_player.getTile()==4) {
+            m_player.nextTile();
+            this.nextPanel();
+            m_player.position.setX(750);
+        }
+
+        else if(m_player.futurePosition().getX()<=20 && m_player.getTile()==5) {
             m_player.nextTile();
             this.nextPanel();
             m_player.position.setX(750);
@@ -273,10 +299,8 @@ public class GamePanel extends JPanel implements Runnable {
         if(m_gameThread != null) {
             m_tileM[m_panel].draw(g2);
             m_player.draw(g2);
-            if (this.m_panel == 1) {
-                for (UnlivingEntity entity : unlivingEntities2) {
-                    drawEntity(g2, entity);
-                }
+            for (UnlivingEntity entity : currentUnlivingEntities) {
+                drawEntity(g2, entity);
             }
         }
         g2.drawImage(gameOverBackground, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
@@ -308,3 +332,4 @@ public class GamePanel extends JPanel implements Runnable {
 
 
 }
+

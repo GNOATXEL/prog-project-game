@@ -10,4 +10,5 @@ public class UnlivingEntity extends Entity {
         height = hauteur;
         pickable = pick;
     }
+
 }
