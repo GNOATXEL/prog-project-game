@@ -113,7 +113,7 @@ public class GamePanel extends JPanel implements Runnable {
         boolean collision = false;
         boolean pickable = false; //TODO : mettre les pickables
 //        System.out.println("unlivingEntities = " + unlivingEntities);
-        m_player.update( pickable);
+        m_player.update(pickable);
 
         if(m_keyH.takes_damage) {
             m_player.takingDamage(1);
@@ -134,7 +134,7 @@ public class GamePanel extends JPanel implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        m_player.update(pickable);
+        m_player.update(false);
     }
 
     public boolean collideSol() {
@@ -164,8 +164,11 @@ public class GamePanel extends JPanel implements Runnable {
 //                System.out.println("----");
                 return true;
             }
-            if(unlivingEntity instanceof Spike) {
+            if(unlivingEntity instanceof Spike && pos.getY() > unlivingEntity.position.getY() - unlivingEntity.height &&
+                    pos.getX() < unlivingEntity.position.getX() + unlivingEntity.width &&
+                    pos.getX() + m_player.width > unlivingEntity.position.getX()) {
                 m_player.takingDamage(1);
+                return false;
             }
         }
         return false;

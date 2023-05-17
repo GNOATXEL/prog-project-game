@@ -176,9 +176,8 @@ public class TileManager {
                     Integer[] spikesArray = new Integer[]{10, 11, 14, 17, 20, 21, 22, 23};
                     List<Integer> spikes = Arrays.asList(spikesArray);
                     if (spikes.contains(num)) {
-                        entity = new Spike(m_gp.TILE_SIZE * col, m_gp.TILE_SIZE * row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
-                    }
-                    if (num!=0 && num !=13 && num != 18 && num !=19 && num!=12 && num!=15 &&num!=16 && num!=2 && num != 3 && num!=4) { //les briques (sans le fond ni le sol)
+                        entity = new Spike(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
+                    } else if (num!=0 && num !=13 && num != 18 && num !=19 && num!=12 && num!=15 &&num!=16 && num!=2 && num != 3 && num!=4) { //les briques (sans le fond ni le sol)
                         entity = new Brick(m_gp.TILE_SIZE *col, m_gp.TILE_SIZE*row, m_gp.TILE_SIZE, m_gp.TILE_SIZE);
                     }
                     if(num==2 || num==3 || num==4 || num==12 || num==15 || num==16) { //le sol
